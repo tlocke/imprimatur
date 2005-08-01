@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<imprimatur port="8080" hostName="localhost">
+  <test name="File upload">
+    <request path="/importData.jsp" method="post"
+    enctype="multipart/form-data" waitForRefreshes="true">
+      <parameter name="id" value="1" />
+
+      <parameter type="file" name="importFile"
+      value="workspace/theelected/test/meps.csv" />
+
+      <regex>Uploaded ok.</regex>
+
+      <responseCode value="200" />
+    </request>
+  </test>
+</imprimatur>
+

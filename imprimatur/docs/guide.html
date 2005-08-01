@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Imprimatur User Guide</title>
+  </head>
+
+  <body>
+    <h1>Imprimatur User Guide</h1>
+
+    <h2>Contents</h2>
+
+    <ul>
+      <li>
+        <a name="contents_what-is-it" href="#what-is-it">What is
+        it?</a>
+      </li>
+
+      <li>
+        <a name="contents_installation" href="#installation">
+        Installation</a>
+      </li>
+
+      <li>
+        <a name="contents_running" href="#running">Running</a>
+      </li>
+
+      <li>
+        <a name="contents_writing-test-scripts"
+        href="#writing-test-scripts">Writing Test Scripts</a>
+      </li>
+
+      <li>
+        <a name="contents_running-within-ant"
+        href="#running-within-ant">Running Within Ant</a>
+      </li>
+
+      <li>
+        <a name="contents_feedback" href="#feedback">Feedback</a>
+      </li>
+    </ul>
+
+    <h2>
+      <a name="what-is-it" href="#contents_what-is-it">What is
+      it?</a>
+    </h2>
+
+    <p>Imprimatur is a web application functional testing tool. The
+    tests are described in a simple XML file. Along with the
+    standard GET and POST actions, Imprimatur handles HTTP sessions
+    and file uploads. The responses can be validated using regular
+    expressions.</p>
+
+    <h2>
+      <a name="installation" href="#contents_installation">
+      Installation</a>
+    </h2>
+
+    <p>Imprimatur is a Java application.</p>
+
+    <ul>
+      <li>Make sure you have recent version of 
+      <a href="http://java.com/">Java installed</a>
+
+      .</li>
+
+      <li>Unpack the Imprimatur archive file.</li>
+    </ul>
+
+    <h2>
+      <a name="running" href="#contents_running">Running</a>
+    </h2>
+
+    <p>Imprimatur is a command line application. In the 
+    <code>imprimatur</code>
+
+    folder type:</p>
+
+    <p>
+      <code>java -jar imprimatur.jar tests/google.xml</code>
+    </p>
+
+    <p>This should perform a short test on the google.com
+    homepage.</p>
+
+    <h2>
+      <a name="writing-test-scripts"
+      href="#contents_writing-test-scripts">Writing test
+      scripts</a>
+    </h2>
+
+    <p>To get started, it's probably best to copy one of the sample
+    tests and then modify it:</p>
+
+    <ul>
+      <li>
+      <a href="../tests/google.xml">google.xml</a>
+
+      - Simple test</li>
+
+      <li>
+      <a href="../tests/multi.xml">multi.xml</a>
+
+      - Multiple tests / multiple requests</li>
+
+      <li>
+      <a href="../tests/post.xml">post.xml</a>
+
+      - Posting a form</li>
+
+      <li>
+      <a href="../tests/file_upload.xml">file_upload.xml</a>
+
+      - File upload, also shows waiting for refreshes</li>
+    </ul>
+
+    <h2>
+      <a name="running-within-ant"
+      href="#contents_running-within-ant">Running within Ant</a>
+    </h2>
+
+    <p>As a command line java app, Imprimatur can be run within 
+    <a href="http://ant.apache.org/">Ant</a>
+
+    with something like:</p>
+
+    <p>
+<pre>
+&lt;java jar="${imprimatur.jar}" fork="true" failonerror="true"&gt;
+    &lt;arg value="${test.home}/imprimatur1.xml" /&gt;
+&lt;/java&gt;
+</pre>
+    </p>
+
+    <h2>
+      <a name="feedback" href="#contents_feedback">Feedback</a>
+    </h2>
+
+    <p>If you have any bugs or comments, or if you want to make a
+    donation to the project, visit our 
+    <a href="http://sourceforge.net/projects/imprimatur/">
+    SourceForge project page</a>
+
+    .</p>
+  </body>
+</html>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<imprimatur port="80" hostName="www.google.com">
+  <test name="Check Google homepage">
+    <request path="/" method="get">
+<!--
+
+Check the HTTP response code is OK
+
+-->
+      <responseCode value="200" />
+
+<!--
+
+Regular expression
+
+-->
+      <regex>Google</regex>
+    </request>
+  </test>
+</imprimatur>
+

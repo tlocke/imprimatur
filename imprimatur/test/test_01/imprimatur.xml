@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<imprimatur port="8080" hostName="localhost">
+  <test name="multiple-regexes">
+    <request path="/imprimatur/test_01.html" method="get">
+      <responseCode value="200" />
+
+      <regex>inexhaustible</regex>
+      <regex>sportive bombination</regex>
+    </request>
+  </test>
+</imprimatur>
+
