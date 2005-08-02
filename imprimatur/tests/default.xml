@@ -1,24 +1,11 @@
 <?xml version="1.0"?>
-<imprimatur port="8080" hostName="localhost">
-  <test name="institution-import-invalid">
-
-    <request path="/editor/login" method="post">
-      <parameter name="emailAddress"
-      value="root@localhost.localdomain" />
-
-      <parameter name="password" value="bridle" />
-
+<imprimatur port="80" hostName="www.google.com">
+  <test name="Check Google homepage">
+    <request path="/" method="get">
       <responseCode value="200" />
 
-      <regex>The areas that you are responsible for are</regex>
-    </request>
-
-    <request path="/editor/logout" method="post">
-      <responseCode value="200" />
-
+      <regex>Google</regex>
     </request>
   </test>
-
-
 </imprimatur>
 
