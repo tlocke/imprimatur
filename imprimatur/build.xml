@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.1 2005-08-01 22:04:01 tlocke_m Exp $
+     $Id: build.xml,v 1.2 2005-08-02 22:09:58 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.1 2005-08-01 22:04:01 tlocke_m Exp $
+     $Id: build.xml,v 1.2 2005-08-02 22:09:58 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -160,7 +160,7 @@
 
   <property name="web.home" value="${wardir}/web" />
 
-  <property name="test.home" value="${basedir}/test" />
+  <property name="test.home" value="${basedir}/qa" />
 
   <property name="commons-httpclient"
   value="commons-httpclient-3.0-rc3.jar" />
@@ -338,26 +338,17 @@
   <target name="dist" depends="compile, app-jar"
   description="Create binary distribution">
   	
-  	
-  	      
-  	  
-  	
+  	<copy file="${app.build}/imprimatur.jar" toDir="${basedir}"/>      
+  	<mkdir dir="${basedir}/conf" />
+  	<copy todir="${basedir}/conf">
+  	      <fileset dir="${appdir}/conf" />
+  	    </copy>
+  	<mkdir dir="${basedir}/tests" />
+  	<copy todir="${basedir}/tests">
+  	      <fileset dir="${appdir}/tests" />
+  	    </copy>
 <!-- Copy documentation subdirectories -->
-  	<property name="zip.dir" value="${dist.home}/zip/imprimatur-001"/>
-  	<copy file="${app.build}/imprimatur.jar" toDir="${zip.dir}"/>
-    <mkdir dir="${zip.dir}/docs" />
-
-    <copy todir="${zip.dir}/docs">
-      <fileset dir="${docs.home}" />
-    </copy>
-  	<mkdir dir="${zip.dir}/conf" />
-    <copy todir="${zip.dir}/conf">
-       <fileset dir="${app.conf}" />
-     </copy>
-  	<mkdir dir="${zip.dir}/tests" />
-    <copy todir="${zip.dir}/tests">
-       <fileset dir="${appdir}/tests" />
-     </copy>
+  	
 <!-- Create application JAR file -->
   	
   	<!--
@@ -365,14 +356,12 @@
     basedir="${build.home}" />
 -->
 <!-- Copy additional files to ${dist.home} as necessary -->
-  	<mkdir dir="${zip.dir}/lib" />
-    <copy todir="${zip.dir}/lib">
+  	<mkdir dir="${basedir}/lib" />
+    <copy todir="${basedir}/lib">
        <fileset dir="${app.build}/lib" />
      </copy>
   	
-  	<zip destfile="${dist.home}/imprimatur-001.zip"
-  	       basedir="${dist.home}/zip"
-  	  />
+  	<delete dir="${build.home}" />
   </target>
 
 <!-- ==================== Install Target ================================== -->
@@ -550,10 +539,10 @@
     password="${manager.password}" path="${app.path}" />
   </target>
 
-  <target name="test" depends="compile, app-jar"
+  <target name="test" depends="dist"
   description="Tests the application">
 <!-- Tests to see if multiple regexps work -->
-    <java jar="${app.build}/imprimatur.jar" fork="true"
+    <java jar="${basedir}/imprimatur.jar" fork="true"
     resultproperty="error.code"
     output="${test.home}/test_01/out.txt">
       <arg value="${test.home}/test_01/imprimatur.xml" />
@@ -637,7 +626,11 @@
   </target>
 
   <target name="app-clean">
-    <delete dir="${app.home}" />
+    <delete dir="${app.build}" />
+  	<delete file="${basedir}/imprimatur.jar"/>
+  	<delete dir="${basedir}/conf" />
+  	<delete dir="${basedir}/tests"/>
+  	<delete dir="${basedir}/lib"/>
   </target>
 
   <target name="compile-app" depends="prepare-app">

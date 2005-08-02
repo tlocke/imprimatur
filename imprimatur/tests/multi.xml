@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<imprimatur port="80" hostName="www.google.com">
+  <test name="Test Google Directory">
+    <request path="/dirhp?hl=en" method="get">
+      <responseCode value="200" />
+
+      <regex>Food</regex>
+
+      <regex>Arts</regex>
+    </request>
+
+    <request path="/Top/Recreation/Food/Cheese/" method="get">
+      <responseCode value="200" />
+
+      <regex>Cheese Making</regex>
+    </request>
+  </test>
+
+  <test name="Test Froogle">
+    <request path="/froogle?hl=en" method="get">
+      <responseCode value="200" />
+
+      <regex>Information&amp;nbsp;for&amp;nbsp;Merchants</regex>
+    </request>
+  </test>
+</imprimatur>
+
