@@ -19,8 +19,12 @@
 
 package uk.org.tlocke.imprimatur;
 
-public class UserException extends Exception {
-	public UserException(String message) {
-		super(message);
-	}
+import java.util.logging.Logger;
+
+public class Debug {
+    private static Logger debug = Logger.getLogger("");
+    
+    public static void print(String string) {
+    	debug.severe(string);
+    }
 }

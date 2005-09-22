@@ -4,15 +4,15 @@
     <request path="/dirhp?hl=en" method="get">
       <responseCode value="200" />
 
-      <regex>Food</regex>
+      <regex>.*Food.*</regex>
 
-      <regex>Arts</regex>
+      <regex>.*Arts.*</regex>
     </request>
 
     <request path="/Top/Recreation/Food/Cheese/" method="get">
       <responseCode value="200" />
 
-      <regex>Cheese Making</regex>
+      <regex>.*Cheese Making.*</regex>
     </request>
   </test>
 
@@ -20,7 +20,7 @@
     <request path="/froogle?hl=en" method="get">
       <responseCode value="200" />
 
-      <regex>Information&amp;nbsp;for&amp;nbsp;Merchants</regex>
+      <regex>.*Information&amp;nbsp;for&amp;nbsp;Merchants.*</regex>
     </request>
   </test>
 </imprimatur>

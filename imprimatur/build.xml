@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.2 2005-08-02 22:09:58 tlocke_m Exp $
+     $Id: build.xml,v 1.3 2005-09-22 20:19:43 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.2 2005-08-02 22:09:58 tlocke_m Exp $
+     $Id: build.xml,v 1.3 2005-09-22 20:19:43 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -160,8 +160,8 @@
 
   <property name="web.home" value="${wardir}/web" />
 
-  <property name="test.home" value="${basedir}/qa" />
-
+  <property name="qa.home" value="${basedir}/qa" />
+	<property name="tests.home" value="${basedir}/tests" />
   <property name="commons-httpclient"
   value="commons-httpclient-3.0-rc3.jar" />
 
@@ -190,7 +190,7 @@
 -->
   <taskdef name="deploy"
   classname="org.apache.catalina.ant.DeployTask" />
-
+	
   <taskdef name="list"
   classname="org.apache.catalina.ant.ListTask" />
 
@@ -360,8 +360,9 @@
     <copy todir="${basedir}/lib">
        <fileset dir="${app.build}/lib" />
      </copy>
-  	
+  	<!--
   	<delete dir="${build.home}" />
+  	-->
   </target>
 
 <!-- ==================== Install Target ================================== -->
@@ -539,45 +540,77 @@
     password="${manager.password}" path="${app.path}" />
   </target>
 
-  <target name="test" depends="dist"
+  <target name="test" depends="dist, install"
   description="Tests the application">
+  	
 <!-- Tests to see if multiple regexps work -->
     <java jar="${basedir}/imprimatur.jar" fork="true"
-    resultproperty="error.code"
-    output="${test.home}/test_01/out.txt">
-      <arg value="${test.home}/test_01/imprimatur.xml" />
+    resultproperty="error.code.01"
+    output="${qa.home}/01/out.txt">
+      <arg value="${qa.home}/01/imprimatur.xml" />
     </java>
 
-    <condition property="failTest">
-      <equals arg1="${error.code}" arg2="0" />
+    <condition property="failTest01">
+      <equals arg1="${error.code.01}" arg2="0" />
     </condition>
 
-    <fail if="failTest" message="Failed test 01" />
+    <fail if="failTest01" message="Failed test 01" />
 
    <exec failonerror="true" executable="grep">
       <arg value="Failed regexp check" />
 
-      <arg value="${test.home}/test_01/out.txt" />
+      <arg value="${qa.home}/01/out.txt" />
     </exec>
-<!--
-    <exec failonerror="true" executable="grep">
-      <arg value="test@tlocke.org.uk" />
-
-      <arg value="/var/mail/tlocke" />
-    </exec>
-    
-    <java jar="${imprimatur.jar}" fork="true" failonerror="true">
-      <arg value="${test.home}/imprimatur2.xml" />
+ 
+   <java jar="${basedir}/imprimatur.jar" fork="true"
+    resultproperty="error.code.02"
+    >
+      <arg value="${qa.home}/02/imprimatur.xml" />
     </java>
-    -->
-<!-- <exec failonerror="true"
-    executable="/home/tlocke/local/java/anteater/bin/anteater">
-      <arg line="-f ${test.home}/anteater.xml" />
 
-      <env key="JAVA_HOME" value="${java.home}" />
-    </exec>
--->
-<!-- <antcall target="remove" /> -->
+    <condition property="failTest02">
+      <equals arg1="${error.code.02}" arg2="1" />
+    </condition>
+
+    <fail if="failTest02" message="Failed test 02" />
+
+    <java jar="${basedir}/imprimatur.jar" fork="true"
+     resultproperty="error.code.03"
+     >
+       <arg value="${qa.home}/03/imprimatur.xml" />
+     </java>
+
+     <condition property="failTest03">
+       <equals arg1="${error.code.03}" arg2="1" />
+     </condition>
+
+     <fail if="failTest03" message="Failed test 03" />
+  	
+  	<!-- Test the examples -->
+  	
+    <java jar="${basedir}/imprimatur.jar" fork="true"
+     resultproperty="error.code.example.01"
+     >
+       <arg value="${tests.home}/google.xml" />
+     </java>
+
+     <condition property="failTest.example.01">
+       <equals arg1="${error.code.example.01}" arg2="1" />
+     </condition>
+
+     <fail if="failTest.example.01" message="Example 01 doesn't work." />  	
+  	
+    <java jar="${basedir}/imprimatur.jar" fork="true"
+     resultproperty="error.code.example.02"
+     >
+       <arg value="${tests.home}/multi.xml" />
+     </java>
+
+     <condition property="failTest.example.02">
+       <equals arg1="${error.code.example.02}" arg2="1" />
+     </condition>
+
+     <fail if="failTest.example.02" message="Example 02 doesn't work." />  	
   </target>
 
   <property name="classes.dir" value="${app.build}/classes" />

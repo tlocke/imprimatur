@@ -6,7 +6,7 @@
 
       <parameter name="name" value="Harold" />
 
-      <regex>Updated successfully!</regex>
+      <regex>.*Updated successfully!.*</regex>
 
       <responseCode value="200" />
     </request>

@@ -10,7 +10,7 @@
 
       <responseCode value="200" />
 
-      <regex>The areas that you are responsible for are</regex>
+      <regex>.*The areas that you are responsible for are.*</regex>
     </request>
 
     <request path="/editor/logout" method="post">

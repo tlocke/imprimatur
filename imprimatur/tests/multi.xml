@@ -4,23 +4,23 @@
     <request path="/dirhp?hl=en" method="get">
       <responseCode value="200" />
 
-      <regex>Food</regex>
+      <regex>.*Food.*</regex>
 
-      <regex>Arts</regex>
+      <regex>.*Arts.*</regex>
     </request>
 
     <request path="/Top/Recreation/Food/Cheese/" method="get">
       <responseCode value="200" />
 
-      <regex>Cheese Making</regex>
+      <regex>.*Cheese Making.*</regex>
     </request>
   </test>
 
-  <test name="Test Froogle">
-    <request path="/froogle?hl=en" method="get">
+  <test name="Test Alerts">
+    <request path="/alerts" method="get">
       <responseCode value="200" />
 
-      <regex>Information&amp;nbsp;for&amp;nbsp;Merchants</regex>
+      <regex>.*privacy policy.*</regex>
     </request>
   </test>
 </imprimatur>

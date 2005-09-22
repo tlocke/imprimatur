@@ -14,7 +14,7 @@ Check the HTTP response code is OK
 Regular expression
 
 -->
-      <regex>Google</regex>
+      <regex>.*Google.*</regex>
     </request>
   </test>
 </imprimatur>

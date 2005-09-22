@@ -8,7 +8,7 @@
       <parameter type="file" name="importFile"
       value="workspace/theelected/test/meps.csv" />
 
-      <regex>Uploaded ok.</regex>
+      <regex>.*Uploaded ok..*</regex>
 
       <responseCode value="200" />
     </request>

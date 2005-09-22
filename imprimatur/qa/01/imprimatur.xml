@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<imprimatur port="8080" hostName="localhost">
+  <test name="single regex failure">
+    <request path="/imprimatur/test_01.html" method="get">
+      <responseCode value="200" />
+
+      <regex>.*sportive bombination.*</regex>
+    </request>
+  </test>
+</imprimatur>
+

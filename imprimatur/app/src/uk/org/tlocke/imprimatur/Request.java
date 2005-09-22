@@ -1,9 +1,22 @@
 /*
- * Created on 25-Jul-2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Copyright 2005 Tony Locke
+ * 
+ * This file is part of Imprimatur.
+ * 
+ * Imprimatur is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * Imprimatur is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * Imprimatur; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
@@ -12,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -27,12 +38,6 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * @author tlocke
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
- */
 public class Request {
 
 	Test test;
@@ -95,17 +100,18 @@ public class Request {
 			int desiredResponseCode = Integer.parseInt(responseCodeElement
 					.getAttribute("value"));
 			if (status != desiredResponseCode) {
-				throw new UserException("Failed response code check");
+				throw new UserException("Failed response code check.\n" +
+						"	desired response code: " + desiredResponseCode + "\n" +
+						"	actual response code: " + status + "\n");
 			}
 		}
-
+		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
-			Pattern pattern = Pattern.compile(regexpElement.getTextContent());
-			Matcher matcher = pattern.matcher(responseBody);
-			if (!matcher.find()) {
+			String pattern = regexpElement.getTextContent();
+			if (!responseBodyNoBreaks.matches(pattern)) {
 				throw new UserException("Failed regexp check: '"
-						+ regexpElement.getTextContent() + "'. Response:\n"
+						+ pattern + "'. Response:\n"
 						+ responseBody);
 			}
 		}
@@ -170,6 +176,7 @@ public class Request {
 		responseBody = getResponseBody(get);
 		return get;
 	}
+
 	private String getResponseBody(HttpMethod method) throws IOException {
 		String body = null;
 		Logger logger = Logger.getLogger("org.apache.commons.httpclient");

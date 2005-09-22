@@ -1,0 +1,18 @@
+* The text within a <regex> element is now a full regular expression. This
+		means that for <regex> elements to work in the same way as the previous
+		version they have to begin and end with '.*'. For example:
+		
+		<regex>hello</regex>
+		
+		should be changed to:
+		
+		<regex>.*hello.*</regex>
+		
+* When searching the request body with a <regex> element, line
+		breaks are ignored
+* Added license bits.
+
+002
+
+* Tidied up directory layout for distribution.
+* Made the default test a working Google test.
