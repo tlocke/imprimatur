@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.3 2005-09-22 20:19:43 tlocke_m Exp $
+     $Id: build.xml,v 1.4 2005-11-22 10:12:53 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.3 2005-09-22 20:19:43 tlocke_m Exp $
+     $Id: build.xml,v 1.4 2005-11-22 10:12:53 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -335,7 +335,7 @@
   * "javadoc" so that the application Javadocs will have been created
 
 -->
-  <target name="dist" depends="compile, app-jar"
+  <target name="dist" depends="app-jar"
   description="Create binary distribution">
   	
   	<copy file="${app.build}/imprimatur.jar" toDir="${basedir}"/>      
@@ -360,9 +360,8 @@
     <copy todir="${basedir}/lib">
        <fileset dir="${app.build}/lib" />
      </copy>
-  	<!--
+  	
   	<delete dir="${build.home}" />
-  	-->
   </target>
 
 <!-- ==================== Install Target ================================== -->
@@ -540,9 +539,9 @@
     password="${manager.password}" path="${app.path}" />
   </target>
 
-  <target name="test" depends="dist, install"
+  <target name="test" depends="dist"
   description="Tests the application">
-  	
+  	<antcall target="install"/>
 <!-- Tests to see if multiple regexps work -->
     <java jar="${basedir}/imprimatur.jar" fork="true"
     resultproperty="error.code.01"

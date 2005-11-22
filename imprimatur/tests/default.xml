@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
-<imprimatur port="8080" hostName="localhost">
-  <test name="institution-import-invalid">
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 001//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-001.dtd">
+<imprimatur port="8080" hostname="localhost">
+	<test name="institution-import-invalid">
 
-    <request path="/editor/login" method="post">
-      <parameter name="emailAddress"
-      value="root@localhost.localdomain" />
+		<request path="/editor/login" method="post">
+			<parameter name="emailAddress"
+				value="root@localhost.localdomain" />
 
-      <parameter name="password" value="bridle" />
+			<parameter name="password" value="bridle" />
 
-      <responseCode value="200" />
+			<response-code value="200" />
 
-      <regex>.*The areas that you are responsible for are.*</regex>
-    </request>
+			<regex pattern=".*The areas that you are responsible for are.*"/>
+		</request>
 
-    <request path="/editor/logout" method="post">
-      <responseCode value="200" />
-
-    </request>
-  </test>
-
-
+		<request path="/editor/logout" method="post">
+			<response-code value="200" />
+		</request>
+	</test>
 </imprimatur>
 

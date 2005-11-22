@@ -81,7 +81,7 @@ public class Imprimatur {
 			Element documentElement = doc.getDocumentElement();
 			defaultPort = Integer
 					.parseInt(documentElement.getAttribute("port"));
-			defaultHostName = documentElement.getAttribute("hostName");
+			defaultHostName = documentElement.getAttribute("hostname");
 
 			NodeList tests = documentElement.getElementsByTagName("test");
 			for (int i = 0; i < tests.getLength(); i++) {

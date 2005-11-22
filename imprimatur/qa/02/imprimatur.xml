@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
-<imprimatur port="8080" hostName="localhost">
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 001//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-001.dtd">
+<imprimatur port="8080" hostname="localhost">
   <test name="single regex success">
     <request path="/imprimatur/test_01.html" method="get">
-      <responseCode value="200" />
+      <response-code value="200" />
 
-      <regex>.*inexhaustible.*</regex>
+      <regex pattern=".*inexhaustible.*"/>
     </request>
   </test>
 </imprimatur>

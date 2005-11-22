@@ -69,8 +69,8 @@ public class Request {
 		enctype = request.getAttribute("enctype");
 		parameterElements = request.getElementsByTagName("parameter");
 		waitForRefreshes = "true".equals(request
-				.getAttribute("waitForRefreshes"));
-		responseCodeElements = request.getElementsByTagName("responseCode");
+				.getAttribute("wait-for-refreshes"));
+		responseCodeElements = request.getElementsByTagName("response-code");
 		regexpElements = request.getElementsByTagName("regex");
 		if (method == null || method.length() == 0) {
 			method = "get";
@@ -108,7 +108,7 @@ public class Request {
 		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
-			String pattern = regexpElement.getTextContent();
+			String pattern = regexpElement.getAttribute("pattern");
 			if (!responseBodyNoBreaks.matches(pattern)) {
 				throw new UserException("Failed regexp check: '"
 						+ pattern + "'. Response:\n"
@@ -127,7 +127,7 @@ public class Request {
 						parameterElement.getAttribute("value"));
 			}
 		} else if (enctype.equals("multipart/form-data")) {
-			List partsList = new ArrayList();
+			List<Part> partsList = new ArrayList<Part>();
 
 			for (int k = 0; k < parameterElements.getLength(); k++) {
 

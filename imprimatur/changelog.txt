@@ -1,3 +1,9 @@
+* Added a dtd for the test script.
+	<responseCode> is now <response-code>
+	and a few other minor changes.
+
+003
+
 * The text within a <regex> element is now a full regular expression. This
 		means that for <regex> elements to work in the same way as the previous
 		version they have to begin and end with '.*'. For example:
