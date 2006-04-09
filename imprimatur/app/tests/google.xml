@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<imprimatur port="80" hostName="www.google.com">
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 002//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-002.dtd">
+<imprimatur port="80" hostname="www.google.com">
   <test name="Check Google homepage">
     <request path="/" method="get">
 <!--
@@ -7,14 +10,14 @@
 Check the HTTP response code is OK
 
 -->
-      <responseCode value="200" />
+      <response-code value="200" />
 
 <!--
 
 Regular expression
 
 -->
-      <regex>.*Google.*</regex>
+      <regex pattern=".*Google.*"/>
     </request>
   </test>
 </imprimatur>

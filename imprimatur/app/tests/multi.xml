@@ -1,26 +1,29 @@
 <?xml version="1.0"?>
-<imprimatur port="80" hostName="www.google.com">
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 002//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-002.dtd">
+<imprimatur port="80" hostname="www.google.com">
   <test name="Test Google Directory">
     <request path="/dirhp?hl=en" method="get">
-      <responseCode value="200" />
+      <response-code value="200" />
 
-      <regex>.*Food.*</regex>
+      <regex pattern=".*Food.*"/>
 
-      <regex>.*Arts.*</regex>
+      <regex pattern=".*Arts.*"/>
     </request>
 
     <request path="/Top/Recreation/Food/Cheese/" method="get">
-      <responseCode value="200" />
+      <response-code value="200" />
 
-      <regex>.*Cheese Making.*</regex>
+      <regex pattern=".*Cheese Making.*"/>
     </request>
   </test>
 
-  <test name="Test Froogle">
-    <request path="/froogle?hl=en" method="get">
-      <responseCode value="200" />
+  <test name="Test Alerts">
+    <request path="/alerts" method="get">
+      <response-code value="200" />
 
-      <regex>.*Information&amp;nbsp;for&amp;nbsp;Merchants.*</regex>
+      <regex pattern=".*privacy policy.*"/>
     </request>
   </test>
 </imprimatur>

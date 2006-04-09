@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.4 2005-11-22 10:12:53 tlocke_m Exp $
+     $Id: build.xml,v 1.5 2006-04-09 22:22:48 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.4 2005-11-22 10:12:53 tlocke_m Exp $
+     $Id: build.xml,v 1.5 2006-04-09 22:22:48 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -161,9 +161,9 @@
   <property name="web.home" value="${wardir}/web" />
 
   <property name="qa.home" value="${basedir}/qa" />
-	<property name="tests.home" value="${basedir}/tests" />
+
   <property name="commons-httpclient"
-  value="commons-httpclient-3.0-rc3.jar" />
+  value="commons-httpclient-3.0.jar" />
 
   <property name="commons-codec" value="commons-codec-1.3.jar" />
 
@@ -337,17 +337,14 @@
 -->
   <target name="dist" depends="app-jar"
   description="Create binary distribution">
-  	
-  	<copy file="${app.build}/imprimatur.jar" toDir="${basedir}"/>      
-  	<mkdir dir="${basedir}/conf" />
-  	<copy todir="${basedir}/conf">
-  	      <fileset dir="${appdir}/conf" />
-  	    </copy>
-  	<mkdir dir="${basedir}/tests" />
-  	<copy todir="${basedir}/tests">
+  	<copy file="${app.build}/imprimatur.jar" toDir="${dist.home}"/>      
+  	<copy todir="${dist.home}/tests">
   	      <fileset dir="${appdir}/tests" />
   	    </copy>
 <!-- Copy documentation subdirectories -->
+  	<copy todir="${dist.home}/docs">
+  	  	      <fileset dir="${appdir}/docs" />
+  	  	    </copy>
   	
 <!-- Create application JAR file -->
   	
@@ -356,12 +353,12 @@
     basedir="${build.home}" />
 -->
 <!-- Copy additional files to ${dist.home} as necessary -->
-  	<mkdir dir="${basedir}/lib" />
-    <copy todir="${basedir}/lib">
+    <copy todir="${dist.home}/lib">
        <fileset dir="${app.build}/lib" />
      </copy>
-  	
-  	<delete dir="${build.home}" />
+  	<copy file="${basedir}/changelog.txt" toDir="${dist.home}"/>
+  	<copy file="${basedir}/gpl.txt" toDir="${dist.home}"/>
+  	<copy file="${basedir}/readme.txt" toDir="${dist.home}"/>
   </target>
 
 <!-- ==================== Install Target ================================== -->
@@ -543,7 +540,7 @@
   description="Tests the application">
   	<antcall target="install"/>
 <!-- Tests to see if multiple regexps work -->
-    <java jar="${basedir}/imprimatur.jar" fork="true"
+    <java jar="${dist.home}/imprimatur.jar" fork="true"
     resultproperty="error.code.01"
     output="${qa.home}/01/out.txt">
       <arg value="${qa.home}/01/imprimatur.xml" />
@@ -561,7 +558,7 @@
       <arg value="${qa.home}/01/out.txt" />
     </exec>
  
-   <java jar="${basedir}/imprimatur.jar" fork="true"
+   <java jar="${dist.home}/imprimatur.jar" fork="true"
     resultproperty="error.code.02"
     >
       <arg value="${qa.home}/02/imprimatur.xml" />
@@ -573,7 +570,7 @@
 
     <fail if="failTest02" message="Failed test 02" />
 
-    <java jar="${basedir}/imprimatur.jar" fork="true"
+    <java jar="${dist.home}/imprimatur.jar" fork="true"
      resultproperty="error.code.03"
      >
        <arg value="${qa.home}/03/imprimatur.xml" />
@@ -586,11 +583,11 @@
      <fail if="failTest03" message="Failed test 03" />
   	
   	<!-- Test the examples -->
-  	
-    <java jar="${basedir}/imprimatur.jar" fork="true"
+  	<property name="dist.tests" value="${dist.home}/tests" />
+    <java jar="${dist.home}/imprimatur.jar" fork="true"
      resultproperty="error.code.example.01"
      >
-       <arg value="${tests.home}/google.xml" />
+       <arg value="${dist.tests}/google.xml" />
      </java>
 
      <condition property="failTest.example.01">
@@ -599,10 +596,10 @@
 
      <fail if="failTest.example.01" message="Example 01 doesn't work." />  	
   	
-    <java jar="${basedir}/imprimatur.jar" fork="true"
+    <java jar="${dist.home}/imprimatur.jar" fork="true"
      resultproperty="error.code.example.02"
      >
-       <arg value="${tests.home}/multi.xml" />
+       <arg value="${dist.tests}/multi.xml" />
      </java>
 
      <condition property="failTest.example.02">
@@ -623,9 +620,6 @@
 
   <property name="javalib.home" value="${user.home}/local/java" />
 
-  <property name="commons-httpclient"
-  value="commons-httpclient-3.0-rc3.jar" />
-
   <property name="commons-codec" value="commons-codec-1.3.jar" />
 
   <property name="commons-logging" value="commons-logging.jar" />
@@ -637,9 +631,6 @@
   </path>
 
   <target name="prepare-app">
-    <copy todir="${app.build}/conf">
-      <fileset dir="${app.conf}" />
-    </copy>
 
     <mkdir dir="${app.build}" />
 
@@ -657,19 +648,16 @@
     <mkdir dir="${classes.dir}" />
   </target>
 
-  <target name="app-clean">
-    <delete dir="${app.build}" />
-  	<delete file="${basedir}/imprimatur.jar"/>
-  	<delete dir="${basedir}/conf" />
-  	<delete dir="${basedir}/tests"/>
-  	<delete dir="${basedir}/lib"/>
-  </target>
-
   <target name="compile-app" depends="prepare-app">
     <javac srcdir="${app.src}" destdir="${classes.dir}"
     debug="true">
       <classpath refid="app.compile.classpath" />
     </javac>
+  	
+  	<!-- Copy application resources -->
+  	    <copy  todir="${classes.dir}">
+  	      <fileset dir="${app.src}" excludes="**/*.java"/>
+  	    </copy>
   </target>
 
   <target name="app-jar" depends="compile-app">

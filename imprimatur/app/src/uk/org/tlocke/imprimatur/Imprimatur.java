@@ -20,38 +20,46 @@
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
-public class Imprimatur {
-	private int defaultPort;
-
-	private String defaultHostName;
-
+public class Imprimatur extends Common {
 	private Document doc;
+
+	private Properties properties = new Properties();
 
 	public Imprimatur(File testFile) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
+			builder.setEntityResolver(new ImprimaturResolver());
 			doc = builder.parse(testFile);
-
+			try {
+				FileInputStream propertiesFile = new FileInputStream(System
+						.getProperty("user.home")
+						+ File.separator + "imprimatur.properties");
+				properties.load(propertiesFile);
+			} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+				// Do nothing
+			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
-	}
-
-	public String getDefaultHostName() {
-		return defaultHostName;
-	}
-
-	public int getDefaultPort() {
-		return defaultPort;
 	}
 
 	public Document getDocument() {
@@ -60,7 +68,7 @@ public class Imprimatur {
 
 	public static void main(String[] args) throws Exception {
 		String fileName = null;
-
+		
 		if (args == null || args.length == 0) {
 			fileName = "../tests/default.xml";
 		} else {
@@ -75,14 +83,24 @@ public class Imprimatur {
 		System.exit(new Imprimatur(file).runTests() == true ? 0 : 1);
 	}
 
+	private String getProperty(String name) {
+		return properties.getProperty(name, name);
+	}
+
 	public boolean runTests() {
 		boolean passed = false;
 		try {
 			Element documentElement = doc.getDocumentElement();
-			defaultPort = Integer
-					.parseInt(documentElement.getAttribute("port"));
-			defaultHostName = documentElement.getAttribute("hostname");
-
+			setPort(Integer.parseInt(documentElement.getAttribute("port")));
+			setHostname(documentElement.getAttribute("hostname"));
+			NodeList credentialsList = documentElement
+					.getElementsByTagName("credentials");
+			if (credentialsList.getLength() > 0) {
+				Element credentialsElement = (Element) credentialsList.item(0);
+				setCredentials(new UsernamePasswordCredentials(
+						getProperty(credentialsElement.getAttribute("username")),
+						getProperty(credentialsElement.getAttribute("password"))));
+			}
 			NodeList tests = documentElement.getElementsByTagName("test");
 			for (int i = 0; i < tests.getLength(); i++) {
 				new Test(this, (Element) tests.item(i)).process();
@@ -98,4 +116,18 @@ public class Imprimatur {
 		return passed;
 	}
 
+	private class ImprimaturResolver implements EntityResolver {
+		public InputSource resolveEntity(String publicId, String systemId)
+				throws SAXException, IOException {
+			if (systemId
+					.equals("http://imprimatur.sourceforge.net/imprimatur-002.dtd")) {
+				InputSource inputSource = new InputSource(Imprimatur.class
+						.getClassLoader().getResourceAsStream(
+								"uk/org/tlocke/imprimatur/imprimatur-002.dtd"));
+				return inputSource;
+			} else {
+				return null;
+			}
+		}
+	}
 }

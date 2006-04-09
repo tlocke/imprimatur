@@ -38,7 +38,7 @@ import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class Request {
+public class Request extends Common {
 
 	Test test;
 
@@ -64,6 +64,7 @@ public class Request {
 
 	public Request(Test test, Element request) throws Exception {
 		this.test = test;
+		setFields(test);
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
 		enctype = request.getAttribute("enctype");
@@ -78,8 +79,7 @@ public class Request {
 		if (enctype == null || enctype.length() == 0) {
 			enctype = "application/x-www-form-urlencoded";
 		}
-		uri = new URI("http", "", test.getImprimatur().getDefaultHostName(),
-				test.getImprimatur().getDefaultPort(), path);
+		uri = new URI("http", "", getHostname(), getPort(), path);
 		System.out.println("Request: '" + uri.toString() + "'.");
 	}
 
@@ -100,9 +100,9 @@ public class Request {
 			int desiredResponseCode = Integer.parseInt(responseCodeElement
 					.getAttribute("value"));
 			if (status != desiredResponseCode) {
-				throw new UserException("Failed response code check.\n" +
-						"	desired response code: " + desiredResponseCode + "\n" +
-						"	actual response code: " + status + "\n");
+				throw new UserException("Failed response code check.\n"
+						+ "	desired response code: " + desiredResponseCode
+						+ "\n" + "	actual response code: " + status + "\n");
 			}
 		}
 		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");
@@ -110,15 +110,15 @@ public class Request {
 			Element regexpElement = (Element) regexpElements.item(i);
 			String pattern = regexpElement.getAttribute("pattern");
 			if (!responseBodyNoBreaks.matches(pattern)) {
-				throw new UserException("Failed regexp check: '"
-						+ pattern + "'. Response:\n"
-						+ responseBody);
+				throw new UserException("Failed regexp check: '" + pattern
+						+ "'. Response:\n" + responseBody);
 			}
 		}
 	}
 
 	private HttpMethod post() throws Exception {
 		PostMethod post = new PostMethod();
+		// post.setFollowRedirects(true);
 		post.setURI(uri);
 		if (enctype.equals("application/x-www-form-urlencoded")) {
 			for (int k = 0; k < parameterElements.getLength(); k++) {
@@ -151,7 +151,17 @@ public class Request {
 					.getParams()));
 		}
 		status = test.getHttpClient().executeMethod(post);
-		responseBody = getResponseBody(post);
+		if (status == 303) {
+			String location = post.getResponseHeader("Location").toString()
+					.substring(10);
+			post.releaseConnection();
+			System.out.println("Redirecting to: '" + location + "'.");
+			GetMethod getMethod = new GetMethod(location);
+			status = test.getHttpClient().executeMethod(getMethod);
+			responseBody = getResponseBody(getMethod);
+		} else {
+			responseBody = getResponseBody(post);
+		}
 		if (waitForRefreshes) {
 			GetMethod getMethod = null;
 			Header refreshHeader = post.getResponseHeader("Refresh");

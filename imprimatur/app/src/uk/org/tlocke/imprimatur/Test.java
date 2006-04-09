@@ -20,16 +20,11 @@
 package uk.org.tlocke.imprimatur;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/**
- * @author tlocke
- * 
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
- */
-class Test {
+class Test extends Common {
 	private Element testElement;
 
 	private HttpClient client = new HttpClient();
@@ -39,12 +34,20 @@ class Test {
 	public Test(Imprimatur imprimatur, Element testElement) {
 		this.imprimatur = imprimatur;
 		this.testElement = testElement;
+		setFields(imprimatur);
+		if (getCredentials() != null) {
+			client.getParams().setAuthenticationPreemptive(true);
+			client.getState()
+					.setCredentials(
+							new AuthScope(getHostname(), getPort(),
+									AuthScope.ANY_REALM), getCredentials());
+		}
 	}
-	
+
 	public Imprimatur getImprimatur() {
 		return imprimatur;
 	}
-	
+
 	public HttpClient getHttpClient() {
 		return client;
 	}
@@ -57,5 +60,4 @@ class Test {
 			new Request(this, (Element) requests.item(i)).process();
 		}
 	}
-
 }
