@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="app/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/tlocke/local/java/commons-httpclient/commons-httpclient-3.0.jar"/>
 	<classpathentry kind="src" path="war/src"/>
-	<classpathentry kind="lib" path="/home/tlocke/local/java/commons-fileupload/commons-fileupload-1.1.jar"/>
+	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-fileupload/commons-fileupload-1.1.jar"/>
+	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-httpclient-3.0/commons-httpclient-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.5 2006-04-09 22:22:48 tlocke_m Exp $
+     $Id: build.xml,v 1.6 2006-04-10 10:46:12 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.5 2006-04-09 22:22:48 tlocke_m Exp $
+     $Id: build.xml,v 1.6 2006-04-10 10:46:12 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -162,12 +162,19 @@
 
   <property name="qa.home" value="${basedir}/qa" />
 
-  <property name="commons-httpclient"
-  value="commons-httpclient-3.0.jar" />
+  <property name="commons-httpclient_path"
+  value="commons-httpclient-3.0" />
+	<property name="commons-httpclient_jar"
+	  value="commons-httpclient-3.0.jar" />
+	<property name="commons-httpclient"
+	  value="${commons-httpclient_path}/${commons-httpclient_jar}" />
+  <property name="commons-codec_path" value="commons-codec-1.3" />
+  <property name="commons-codec_jar" value="commons-codec-1.3.jar" />
+  <property name="commons-codec" value="${commons-codec_path}/${commons-codec_jar}" />
 
-  <property name="commons-codec" value="commons-codec-1.3.jar" />
-
-  <property name="commons-logging" value="commons-logging.jar" />
+  <property name="commons-logging_path" value="commons-logging-1.0.4" />
+  <property name="commons-logging_jar" value="commons-logging.jar" />
+  <property name="commons-logging" value="${commons-logging_path}/${commons-logging_jar}" />
 
 <!-- ================== Custom Ant Task Definitions ======================= -->
 <!--
@@ -620,10 +627,6 @@
 
   <property name="javalib.home" value="${user.home}/local/java" />
 
-  <property name="commons-codec" value="commons-codec-1.3.jar" />
-
-  <property name="commons-logging" value="commons-logging.jar" />
-
   <path id="app.compile.classpath">
     <fileset dir="${lib.dir}">
       <include name="*.jar" />
@@ -637,13 +640,13 @@
     <mkdir dir="${classes.dir}" />
 
     <copy todir="${lib.dir}"
-    file="${javalib.home}/commons-httpclient/${commons-httpclient}" />
+    file="${javalib.home}/${commons-httpclient}" />
 
     <copy todir="${lib.dir}"
     file="${javalib.home}/${commons-codec}" />
 
     <copy todir="${lib.dir}"
-    file="${javalib.home}/commons-logging/${commons-logging}" />
+    file="${javalib.home}/${commons-logging}" />
 
     <mkdir dir="${classes.dir}" />
   </target>
@@ -667,7 +670,7 @@
         <attribute name="Main-Class" value="${main-class}" />
 
         <attribute name="Class-Path"
-        value="lib/${commons-httpclient} lib/${commons-codec} lib/${commons-logging}" />
+        value="lib/${commons-httpclient_jar} lib/${commons-codec} lib/${commons-logging}" />
       </manifest>
     </jar>
   </target>
