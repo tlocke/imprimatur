@@ -1,3 +1,4 @@
+* Now sensibly handles relative filenames in file upload
 * Added a <credentials> element for authentication
 * Follows redirects for GETs as default.
 * Added a dtd for the test script.

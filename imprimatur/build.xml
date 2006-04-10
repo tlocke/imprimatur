@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.6 2006-04-10 10:46:12 tlocke_m Exp $
+     $Id: build.xml,v 1.7 2006-04-10 21:44:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.6 2006-04-10 10:46:12 tlocke_m Exp $
+     $Id: build.xml,v 1.7 2006-04-10 21:44:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -670,7 +670,7 @@
         <attribute name="Main-Class" value="${main-class}" />
 
         <attribute name="Class-Path"
-        value="lib/${commons-httpclient_jar} lib/${commons-codec} lib/${commons-logging}" />
+        value="lib/${commons-httpclient_jar} lib/${commons-codec_jar} lib/${commons-logging_jar}" />
       </manifest>
     </jar>
   </target>

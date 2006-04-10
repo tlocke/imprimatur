@@ -40,7 +40,7 @@ public class Imprimatur extends Common {
 	private Document doc;
 
 	private Properties properties = new Properties();
-
+	private File scriptDirectory;
 	public Imprimatur(File testFile) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
@@ -48,6 +48,7 @@ public class Imprimatur extends Common {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			builder.setEntityResolver(new ImprimaturResolver());
 			doc = builder.parse(testFile);
+			scriptDirectory = new File(testFile.getParent());
 			try {
 				FileInputStream propertiesFile = new FileInputStream(System
 						.getProperty("user.home")
@@ -64,6 +65,10 @@ public class Imprimatur extends Common {
 
 	public Document getDocument() {
 		return doc;
+	}
+	
+	public File getScriptDirectory() {
+		return scriptDirectory;
 	}
 
 	public static void main(String[] args) throws Exception {

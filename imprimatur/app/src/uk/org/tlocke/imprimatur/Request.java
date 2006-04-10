@@ -135,8 +135,13 @@ public class Request extends Common {
 				String parameterName = parameterElement.getAttribute("name");
 				String parameterValue = parameterElement.getAttribute("value");
 				if (parameterElement.getAttribute("type").equals("file")) {
-					partsList.add(new FilePart(parameterName, new File(
-							parameterValue)));
+					File fileToUpload = new File(parameterValue);
+					if (!fileToUpload.isAbsolute()) {
+						fileToUpload = new File(test.getImprimatur()
+								.getScriptDirectory().toString()
+								+ File.separator + fileToUpload.toString());
+					}
+					partsList.add(new FilePart(parameterName, fileToUpload));
 				} else {
 					partsList
 							.add(new StringPart(parameterName, parameterValue));
