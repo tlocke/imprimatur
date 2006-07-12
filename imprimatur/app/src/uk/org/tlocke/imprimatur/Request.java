@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -60,6 +61,8 @@ public class Request extends Common {
 
 	NodeList responseCodeElements;
 
+	Element refreshElement = null;
+
 	NodeList regexpElements;
 
 	public Request(Test test, Element request) throws Exception {
@@ -72,6 +75,10 @@ public class Request extends Common {
 		waitForRefreshes = "true".equals(request
 				.getAttribute("wait-for-refreshes"));
 		responseCodeElements = request.getElementsByTagName("response-code");
+		NodeList refreshElements = request.getElementsByTagName("refresh");
+		if (refreshElements.getLength() > 0) {
+			refreshElement = (Element) refreshElements.item(0);
+		}
 		regexpElements = request.getElementsByTagName("regex");
 		if (method == null || method.length() == 0) {
 			method = "get";
@@ -84,11 +91,38 @@ public class Request extends Common {
 	}
 
 	public void process() throws Exception {
+		int maxTries = 1;
+		long delay = 0;
+		if (refreshElement != null) {
+			delay = Long.parseLong(refreshElement.getAttribute("wait"));
+			maxTries = Integer.parseInt(refreshElement.getAttribute("max"));
+		}
+		int i = 0;
+		boolean hasSucceeded = false;
+		Exception exception = null;
+		while (i < maxTries && !hasSucceeded) {
+			try {
+				processOnce();
+				hasSucceeded = true;
+			} catch (Exception e) {
+				exception = e;
+			}
+			Thread.sleep(delay);
+			i++;
+		}
+		if (!hasSucceeded) {
+			throw exception;
+		}
+	}
+
+	public void processOnce() throws Exception {
 		HttpMethod httpMethod = null;
 		if (method.equals("post")) {
 			httpMethod = post();
 		} else if (method.equals("get")) {
 			httpMethod = get();
+		} else if (method.equals("delete")) {
+			httpMethod = delete();
 		} else {
 			throw new UserException("Unknown request method type: " + method);
 		}
@@ -190,6 +224,15 @@ public class Request extends Common {
 		status = test.getHttpClient().executeMethod(get);
 		responseBody = getResponseBody(get);
 		return get;
+	}
+	
+	private HttpMethod delete() throws Exception {
+		DeleteMethod delete = new DeleteMethod();
+		delete.setURI(uri);
+		delete.setFollowRedirects(true);
+		status = test.getHttpClient().executeMethod(delete);
+		responseBody = getResponseBody(delete);
+		return delete;
 	}
 
 	private String getResponseBody(HttpMethod method) throws IOException {

@@ -125,10 +125,10 @@ public class Imprimatur extends Common {
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId
-					.equals("http://imprimatur.sourceforge.net/imprimatur-002.dtd")) {
+					.equals("http://imprimatur.sourceforge.net/imprimatur-003.dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
-								"uk/org/tlocke/imprimatur/imprimatur-002.dtd"));
+								"uk/org/tlocke/imprimatur/imprimatur-003.dtd"));
 				return inputSource;
 			} else {
 				return null;

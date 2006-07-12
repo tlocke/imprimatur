@@ -1,3 +1,8 @@
+* Now handles the http DELETE method.
+* Added facility for refreshing until a certain result.
+
+004
+
 * Now sensibly handles relative filenames in file upload
 * Added a <credentials> element for authentication
 * Follows redirects for GETs as default.
