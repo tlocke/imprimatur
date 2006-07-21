@@ -62,7 +62,7 @@ Script for testing web applications.
 -->
 
 <!ELEMENT refresh EMPTY>
-	<!ATTLIST refresh wait CDATA "2">
+	<!ATTLIST refresh wait CDATA "500">
 	<!ATTLIST refresh max CDATA "10">
 
 <!--

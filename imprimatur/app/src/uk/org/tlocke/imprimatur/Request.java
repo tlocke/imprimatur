@@ -136,7 +136,8 @@ public class Request extends Common {
 			if (status != desiredResponseCode) {
 				throw new UserException("Failed response code check.\n"
 						+ "	desired response code: " + desiredResponseCode
-						+ "\n" + "	actual response code: " + status + "\n");
+						+ "\n" + "	Actual response code: " + status + "\n" +
+						"  Actual response body:\n" + responseBody);
 			}
 		}
 		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");

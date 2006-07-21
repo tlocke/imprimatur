@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.7 2006-04-10 21:44:06 tlocke_m Exp $
+     $Id: build.xml,v 1.8 2006-07-21 17:38:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.7 2006-04-10 21:44:06 tlocke_m Exp $
+     $Id: build.xml,v 1.8 2006-07-21 17:38:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -163,9 +163,9 @@
   <property name="qa.home" value="${basedir}/qa" />
 
   <property name="commons-httpclient_path"
-  value="commons-httpclient-3.0" />
+  value="commons-httpclient-3.0.1" />
 	<property name="commons-httpclient_jar"
-	  value="commons-httpclient-3.0.jar" />
+	  value="commons-httpclient-3.0.1.jar" />
 	<property name="commons-httpclient"
 	  value="${commons-httpclient_path}/${commons-httpclient_jar}" />
   <property name="commons-codec_path" value="commons-codec-1.3" />
