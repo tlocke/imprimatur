@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 
 public class Request extends Common {
 
-	Test test;
+	Session session;
 
 	String method;
 
@@ -55,8 +55,6 @@ public class Request extends Common {
 
 	NodeList parameterElements;
 
-	boolean waitForRefreshes;
-
 	URI uri;
 
 	NodeList responseCodeElements;
@@ -65,15 +63,13 @@ public class Request extends Common {
 
 	NodeList regexpElements;
 
-	public Request(Test test, Element request) throws Exception {
-		this.test = test;
-		setFields(test);
+	public Request(Session session, Element request) throws Exception {
+		super(session, request);
+		this.session = session;
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
 		enctype = request.getAttribute("enctype");
 		parameterElements = request.getElementsByTagName("parameter");
-		waitForRefreshes = "true".equals(request
-				.getAttribute("wait-for-refreshes"));
 		responseCodeElements = request.getElementsByTagName("response-code");
 		NodeList refreshElements = request.getElementsByTagName("refresh");
 		if (refreshElements.getLength() > 0) {
@@ -86,11 +82,16 @@ public class Request extends Common {
 		if (enctype == null || enctype.length() == 0) {
 			enctype = "application/x-www-form-urlencoded";
 		}
-		uri = new URI("http", "", getHostname(), getPort(), path);
-		System.out.println("Request: '" + uri.toString() + "'.");
 	}
 
-	public void process() throws Exception {
+	void process() throws Exception {
+		super.process();
+		uri = new URI("http", "", getHostname(), getPort(), path);
+		System.out.println("Request: '" + uri.toString() + "'.");
+		Credentials credentials = getCredentials();
+		if (credentials != null) {
+			session.setCredentials(credentials);
+		}
 		int maxTries = 1;
 		long delay = 0;
 		if (refreshElement != null) {
@@ -115,7 +116,7 @@ public class Request extends Common {
 		}
 	}
 
-	public void processOnce() throws Exception {
+	private void processOnce() throws Exception {
 		HttpMethod httpMethod = null;
 		if (method.equals("post")) {
 			httpMethod = post();
@@ -172,9 +173,7 @@ public class Request extends Common {
 				if (parameterElement.getAttribute("type").equals("file")) {
 					File fileToUpload = new File(parameterValue);
 					if (!fileToUpload.isAbsolute()) {
-						fileToUpload = new File(test.getImprimatur()
-								.getScriptDirectory().toString()
-								+ File.separator + fileToUpload.toString());
+						fileToUpload = new File(fileToUpload.toString());
 					}
 					partsList.add(new FilePart(parameterName, fileToUpload));
 				} else {
@@ -190,30 +189,17 @@ public class Request extends Common {
 			post.setRequestEntity(new MultipartRequestEntity(parts, post
 					.getParams()));
 		}
-		status = test.getHttpClient().executeMethod(post);
+		status = session.getHttpClient().executeMethod(post);
 		if (status == 303) {
 			String location = post.getResponseHeader("Location").toString()
 					.substring(10);
 			post.releaseConnection();
 			System.out.println("Redirecting to: '" + location + "'.");
 			GetMethod getMethod = new GetMethod(location);
-			status = test.getHttpClient().executeMethod(getMethod);
+			status = session.getHttpClient().executeMethod(getMethod);
 			responseBody = getResponseBody(getMethod);
 		} else {
 			responseBody = getResponseBody(post);
-		}
-		if (waitForRefreshes) {
-			GetMethod getMethod = null;
-			Header refreshHeader = post.getResponseHeader("Refresh");
-			while (refreshHeader != null) {
-				Thread.sleep(Integer.parseInt(refreshHeader.getValue()) * 1000);
-				getMethod = new GetMethod(post.getURI().toString());
-				status = test.getHttpClient().executeMethod(getMethod);
-				refreshHeader = getMethod.getResponseHeader("Refresh");
-			}
-			if (getMethod != null) {
-				responseBody = getResponseBody(getMethod);
-			}
 		}
 		return post;
 	}
@@ -222,7 +208,7 @@ public class Request extends Common {
 		GetMethod get = new GetMethod();
 		get.setURI(uri);
 		get.setFollowRedirects(true);
-		status = test.getHttpClient().executeMethod(get);
+		status = session.getHttpClient().executeMethod(get);
 		responseBody = getResponseBody(get);
 		return get;
 	}
@@ -231,7 +217,7 @@ public class Request extends Common {
 		DeleteMethod delete = new DeleteMethod();
 		delete.setURI(uri);
 		delete.setFollowRedirects(true);
-		status = test.getHttpClient().executeMethod(delete);
+		status = session.getHttpClient().executeMethod(delete);
 		responseBody = getResponseBody(delete);
 		return delete;
 	}

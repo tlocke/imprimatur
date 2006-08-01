@@ -20,15 +20,11 @@
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -39,41 +35,42 @@ import org.xml.sax.SAXException;
 public class Imprimatur extends Common {
 	private Document doc;
 
-	private Properties properties = new Properties();
-	private File scriptDirectory;
-	public Imprimatur(File testFile) {
+	// private Properties properties = new Properties();
+
+	public Imprimatur(Document doc) {
+		super(null, doc.getDocumentElement());
+		this.doc = doc;
+		// File scriptDirectory;
+		/*
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			builder.setEntityResolver(new ImprimaturResolver());
 			doc = builder.parse(testFile);
-			scriptDirectory = new File(testFile.getParent());
-			try {
-				FileInputStream propertiesFile = new FileInputStream(System
-						.getProperty("user.home")
-						+ File.separator + "imprimatur.properties");
-				properties.load(propertiesFile);
-			} catch (FileNotFoundException e) {
-				System.out.println(e.getMessage());
-				// Do nothing
-			}
+			/*
+			 * scriptDirectory = new File(testFile.getParent()); try {
+			 * FileInputStream propertiesFile = new FileInputStream(System
+			 * .getProperty("user.home") + File.separator +
+			 * "imprimatur.properties"); properties.load(propertiesFile); }
+			 * catch (FileNotFoundException e) {
+			 * System.out.println(e.getMessage()); // Do nothing }
+			 */
+		/*
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	public Document getDocument() {
 		return doc;
 	}
-	
-	public File getScriptDirectory() {
-		return scriptDirectory;
-	}
 
 	public static void main(String[] args) throws Exception {
 		String fileName = null;
-		
+		boolean passed = false;
+
 		if (args == null || args.length == 0) {
 			fileName = "../tests/default.xml";
 		} else {
@@ -85,43 +82,40 @@ public class Imprimatur extends Common {
 					+ "' doesn't exist.");
 
 		}
-		System.exit(new Imprimatur(file).runTests() == true ? 0 : 1);
-	}
-
-	private String getProperty(String name) {
-		return properties.getProperty(name, name);
-	}
-
-	public boolean runTests() {
-		boolean passed = false;
 		try {
-			Element documentElement = doc.getDocumentElement();
-			setPort(Integer.parseInt(documentElement.getAttribute("port")));
-			setHostname(documentElement.getAttribute("hostname"));
-			NodeList credentialsList = documentElement
-					.getElementsByTagName("credentials");
-			if (credentialsList.getLength() > 0) {
-				Element credentialsElement = (Element) credentialsList.item(0);
-				setCredentials(new UsernamePasswordCredentials(
-						getProperty(credentialsElement.getAttribute("username")),
-						getProperty(credentialsElement.getAttribute("password"))));
-			}
-			NodeList tests = documentElement.getElementsByTagName("test");
-			for (int i = 0; i < tests.getLength(); i++) {
-				new Test(this, (Element) tests.item(i)).process();
-			}
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			builder.setEntityResolver(new ImprimaturResolver());
+			Document doc = builder.parse(file);
+			new Imprimatur(doc).process();
 			System.out.println("Passed tests!");
 			passed = true;
 		} catch (UserException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
-		return passed;
+		System.exit(passed ? 0 : 1);
 	}
 
-	private class ImprimaturResolver implements EntityResolver {
+	/*
+	 * private String getProperty(String name) { return
+	 * properties.getProperty(name, name); }
+	 */
+	public void process() throws Exception {
+		super.process();
+		NodeList testGroups = doc.getDocumentElement().getElementsByTagName("test-group");
+		for (int i = 0; i < testGroups.getLength(); i++) {
+			new TestGroup(this, (Element) testGroups.item(i)).process();
+		}
+		if (testGroups.getLength() == 0) {
+			new TestGroup(this, getElement()).process();
+		}
+	}
+
+	static private class ImprimaturResolver implements EntityResolver {
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId

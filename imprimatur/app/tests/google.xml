@@ -1,24 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE imprimatur PUBLIC 
-    "-//Imprimatur DTD 002//EN"
-    "http://imprimatur.sourceforge.net/imprimatur-002.dtd">
+    "-//Imprimatur DTD 003//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-003.dtd">
 <imprimatur port="80" hostname="www.google.com">
-  <test name="Check Google homepage">
-    <request path="/" method="get">
-<!--
+	<test name="Check Google homepage">
+		<request path="/">
 
-Check the HTTP response code is OK
+			<!-- Check the HTTP response code is OK	-->
+			<response-code value="200" />
 
--->
-      <response-code value="200" />
-
-<!--
-
-Regular expression
-
--->
-      <regex pattern=".*Google.*"/>
-    </request>
-  </test>
+			<!-- Regular expression	-->
+			<regex pattern=".*Google.*" />
+		</request>
+	</test>
 </imprimatur>
 

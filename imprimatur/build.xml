@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.8 2006-07-21 17:38:06 tlocke_m Exp $
+     $Id: build.xml,v 1.9 2006-08-01 13:57:39 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.8 2006-07-21 17:38:06 tlocke_m Exp $
+     $Id: build.xml,v 1.9 2006-08-01 13:57:39 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -172,8 +172,8 @@
   <property name="commons-codec_jar" value="commons-codec-1.3.jar" />
   <property name="commons-codec" value="${commons-codec_path}/${commons-codec_jar}" />
 
-  <property name="commons-logging_path" value="commons-logging-1.0.4" />
-  <property name="commons-logging_jar" value="commons-logging.jar" />
+  <property name="commons-logging_path" value="commons-logging-1.1" />
+  <property name="commons-logging_jar" value="commons-logging-1.1.jar" />
   <property name="commons-logging" value="${commons-logging_path}/${commons-logging_jar}" />
 
 <!-- ================== Custom Ant Task Definitions ======================= -->
@@ -314,6 +314,7 @@
     </path>
 
 <!-- Compile Java classes as necessary -->
+  	<!--
     <mkdir dir="${war.build}/WEB-INF/classes" />
 
     <javac srcdir="${war.src}"
@@ -322,11 +323,13 @@
     optimize="${compile.optimize}">
       <classpath refid="war.compile.classpath" />
     </javac>
-
+-->
 <!-- Copy application resources -->
+  	<!--
     <copy todir="${war.build}/WEB-INF/classes">
       <fileset dir="${war.src}" excludes="**/*.java" />
     </copy>
+    -->
   </target>
 
 <!-- ==================== Dist Target ===================================== -->
@@ -349,10 +352,11 @@
   	      <fileset dir="${appdir}/tests" />
   	    </copy>
 <!-- Copy documentation subdirectories -->
+  	<!--
   	<copy todir="${dist.home}/docs">
   	  	      <fileset dir="${appdir}/docs" />
   	  	    </copy>
-  	
+  	-->
 <!-- Create application JAR file -->
   	
   	<!--
@@ -406,11 +410,12 @@
   <target name="javadoc" depends="compile"
   description="Create Javadoc API documentation">
     <mkdir dir="${dist.home}/docs/api" />
-
+<!--
     <javadoc sourcepath="${src.home}"
     destdir="${dist.home}/docs/api" packagenames="*">
       <classpath refid="war.compile.classpath" />
     </javadoc>
+    -->
   </target>
 
 <!-- ====================== List Target =================================== -->
@@ -590,6 +595,7 @@
      <fail if="failTest03" message="Failed test 03" />
   	
   	<!-- Test the examples -->
+  	<!--
   	<property name="dist.tests" value="${dist.home}/tests" />
     <java jar="${dist.home}/imprimatur.jar" fork="true"
      resultproperty="error.code.example.01"
@@ -614,6 +620,7 @@
      </condition>
 
      <fail if="failTest.example.02" message="Example 02 doesn't work." />  	
+     -->
   </target>
 
   <property name="classes.dir" value="${app.build}/classes" />

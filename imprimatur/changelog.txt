@@ -1,3 +1,7 @@
+* Added the <refresh/> element so that we can keep refreshing until
+	a condition is fulfilled.
+* Removed wait-for-refreshes feature as automatic refreshes aren't part
+	of the HTTP standard.
 * Now handles the http DELETE method.
 * Added facility for refreshing until a certain result.
 

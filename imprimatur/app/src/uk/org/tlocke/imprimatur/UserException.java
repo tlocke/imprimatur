@@ -20,6 +20,8 @@
 package uk.org.tlocke.imprimatur;
 
 public class UserException extends Exception {
+	private static final long serialVersionUID = -211226903976520819L;
+
 	public UserException(String message) {
 		super(message);
 	}

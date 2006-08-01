@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="app/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-fileupload/commons-fileupload-1.1.jar"/>
+	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-fileupload/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-httpclient-3.0.1/commons-httpclient-3.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

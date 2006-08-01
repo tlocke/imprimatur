@@ -19,22 +19,33 @@
 
 package uk.org.tlocke.imprimatur;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-class Test extends Common {
+class Session extends Common {
 	private HttpClient client = new HttpClient();
 
-	private TestGroup testGroup;
+	private Test test;
 
-	public Test(TestGroup testGroup, Element testElement) {
-		super(testGroup, testElement);
-		this.testGroup = testGroup;
+	public Session(Test test, Element testElement) {
+		super(test, testElement);
+		this.test = test;
+		if (getCredentials() != null) {
+			setCredentials(getCredentials());
+		}
 	}
 
-	public TestGroup getTestGroup() {
-		return testGroup;
+	void setCredentials(Credentials credentials) {
+		client.getState().setCredentials(
+				new AuthScope(getHostname(), getPort(), AuthScope.ANY_REALM),
+				getCredentials());
+	}
+
+	public Test getTest() {
+		return test;
 	}
 
 	public HttpClient getHttpClient() {
@@ -43,14 +54,10 @@ class Test extends Common {
 
 	public void process() throws Exception {
 		super.process();
-		System.out.println("Test: '" + getElement().getAttribute("name") + "'.");
-		NodeList sessions = getElement().getElementsByTagName("session");
+		NodeList requests = getElement().getElementsByTagName("request");
 
-		for (int i = 0; i < sessions.getLength(); i++) {
-			new Session(this, (Element) sessions.item(i)).process();
-		}
-		if (sessions.getLength() == 0) {
-			new Session(this, getElement()).process();
+		for (int i = 0; i < requests.getLength(); i++) {
+			new Request(this, (Element) requests.item(i)).process();
 		}
 	}
 }
