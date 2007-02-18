@@ -1,36 +1,3 @@
-* Added the <refresh/> element so that we can keep refreshing until
-	a condition is fulfilled.
-* Removed wait-for-refreshes feature as automatic refreshes aren't part
-	of the HTTP standard.
-* Now handles the http DELETE method.
-* Added facility for refreshing until a certain result.
+For bug fixes and feature requests please see:
 
-004
-
-* Now sensibly handles relative filenames in file upload
-* Added a <credentials> element for authentication
-* Follows redirects for GETs as default.
-* Added a dtd for the test script.
-	<responseCode> is now <response-code>
-	and a few other minor changes.
-
-003
-
-* The text within a <regex> element is now a full regular expression. This
-		means that for <regex> elements to work in the same way as the previous
-		version they have to begin and end with '.*'. For example:
-		
-		<regex>hello</regex>
-		
-		should be changed to:
-		
-		<regex>.*hello.*</regex>
-		
-* When searching the request body with a <regex> element, line
-		breaks are ignored
-* Added license bits.
-
-002
-
-* Tidied up directory layout for distribution.
-* Made the default test a working Google test.
+http://sourceforge.net/tracker/?group_id=145016

@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -34,12 +35,13 @@ import org.xml.sax.SAXException;
 
 public class Imprimatur extends Common {
 	private Document doc;
-
+private File testFile;
 	// private Properties properties = new Properties();
 
-	public Imprimatur(Document doc) {
-		super(null, doc.getDocumentElement());
+	public Imprimatur(Document doc, File testFile) {
+		super(null, doc.getDocumentElement(), testFile);
 		this.doc = doc;
+		this.testFile = testFile;
 		// File scriptDirectory;
 		/*
 		try {
@@ -66,6 +68,10 @@ public class Imprimatur extends Common {
 	public Document getDocument() {
 		return doc;
 	}
+	
+	public File getTestFile() {
+		return testFile;
+	}
 
 	public static void main(String[] args) throws Exception {
 		String fileName = null;
@@ -88,7 +94,7 @@ public class Imprimatur extends Common {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			builder.setEntityResolver(new ImprimaturResolver());
 			Document doc = builder.parse(file);
-			new Imprimatur(doc).process();
+			new Imprimatur(doc, file).process();
 			System.out.println("Passed tests!");
 			passed = true;
 		} catch (UserException e) {
@@ -106,20 +112,22 @@ public class Imprimatur extends Common {
 	 */
 	public void process() throws Exception {
 		super.process();
-		NodeList testGroups = doc.getDocumentElement().getElementsByTagName("test-group");
+		NodeList testGroups = doc.getDocumentElement().getChildNodes();
+		//.getElementsByTagName("test-group");
 		for (int i = 0; i < testGroups.getLength(); i++) {
-			new TestGroup(this, (Element) testGroups.item(i)).process();
+			Node node = testGroups.item(i);
+			if (node.getNodeName().equals("test-group")) {
+			new TestGroup(this, (Element) testGroups.item(i), getScriptFile()).process();
+			}
 		}
-		if (testGroups.getLength() == 0) {
-			new TestGroup(this, getElement()).process();
-		}
+		new TestGroup(this, getElement(), getScriptFile()).process();
 	}
 
 	static private class ImprimaturResolver implements EntityResolver {
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId
-					.equals("http://imprimatur.sourceforge.net/imprimatur-003.dtd")) {
+					.equals("http://imprimatur.wikispaces.com/space/showimage/imprimatur-003.dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
 								"uk/org/tlocke/imprimatur/imprimatur-003.dtd"));

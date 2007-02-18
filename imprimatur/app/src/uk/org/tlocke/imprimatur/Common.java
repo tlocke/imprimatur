@@ -1,5 +1,7 @@
 package uk.org.tlocke.imprimatur;
 
+import java.io.File;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.w3c.dom.Element;
@@ -15,10 +17,13 @@ public abstract class Common {
 	private int port;
 
 	private Credentials credentials;
+	
+	private File scriptFile;
 
-	Common(Common superCommon, Element element) {
+	Common(Common superCommon, Element element, File scriptFile) {
 		this.superCommon = superCommon;
 		this.element = element;
+		setScriptFile(scriptFile);
 	}
 
 	public String getHostname() {
@@ -44,6 +49,14 @@ public abstract class Common {
 	Element getElement() {
 		return element;
 	}
+	
+	public File getScriptFile() {
+		return scriptFile;
+	}
+	
+	private void setScriptFile(File scriptFile) {
+		this.scriptFile = scriptFile;
+	}
 
 	void process() throws Exception {
 		String portString = element == null ? "" : element.getAttribute("port");
@@ -59,6 +72,8 @@ public abstract class Common {
 			credentials = new UsernamePasswordCredentials(credentialsElement
 					.getAttribute("username"), credentialsElement
 					.getAttribute("password"));
+		} else if (superCommon != null) {
+			credentials = superCommon.getCredentials();
 		}
 	}
 }

@@ -19,8 +19,11 @@
 
 package uk.org.tlocke.imprimatur;
 
+import java.io.File;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Test extends Common {
@@ -28,8 +31,8 @@ class Test extends Common {
 
 	private TestGroup testGroup;
 
-	public Test(TestGroup testGroup, Element testElement) {
-		super(testGroup, testElement);
+	public Test(TestGroup testGroup, Element testElement, File scriptFile) {
+		super(testGroup, testElement, scriptFile);
 		this.testGroup = testGroup;
 	}
 
@@ -43,14 +46,19 @@ class Test extends Common {
 
 	public void process() throws Exception {
 		super.process();
-		System.out.println("Test: '" + getElement().getAttribute("name") + "'.");
-		NodeList sessions = getElement().getElementsByTagName("session");
+		if (getElement().getNodeName().equals("test")) {
+			System.out.println("Test: '" + getElement().getAttribute("name")
+					+ "'.");
+		}
+		NodeList sessions = getElement().getChildNodes();
 
 		for (int i = 0; i < sessions.getLength(); i++) {
-			new Session(this, (Element) sessions.item(i)).process();
+			Node node = sessions.item(i);
+			if (node.getNodeName().equals("session")) {
+				new Session(this, (Element) sessions.item(i), getScriptFile())
+						.process();
+			}
 		}
-		if (sessions.getLength() == 0) {
-			new Session(this, getElement()).process();
-		}
+		new Session(this, getElement(), getScriptFile()).process();
 	}
 }

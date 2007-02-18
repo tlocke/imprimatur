@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -63,8 +62,9 @@ public class Request extends Common {
 
 	NodeList regexpElements;
 
-	public Request(Session session, Element request) throws Exception {
-		super(session, request);
+	public Request(Session session, Element request, File scriptFile)
+			throws Exception {
+		super(session, request, scriptFile);
 		this.session = session;
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
@@ -88,10 +88,6 @@ public class Request extends Common {
 		super.process();
 		uri = new URI("http", "", getHostname(), getPort(), path);
 		System.out.println("Request: '" + uri.toString() + "'.");
-		Credentials credentials = getCredentials();
-		if (credentials != null) {
-			session.setCredentials(credentials);
-		}
 		int maxTries = 1;
 		long delay = 0;
 		if (refreshElement != null) {
@@ -137,8 +133,8 @@ public class Request extends Common {
 			if (status != desiredResponseCode) {
 				throw new UserException("Failed response code check.\n"
 						+ "	desired response code: " + desiredResponseCode
-						+ "\n" + "	Actual response code: " + status + "\n" +
-						"  Actual response body:\n" + responseBody);
+						+ "\n" + "	Actual response code: " + status + "\n"
+						+ "  Actual response body:\n" + responseBody);
 			}
 		}
 		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");
@@ -173,7 +169,9 @@ public class Request extends Common {
 				if (parameterElement.getAttribute("type").equals("file")) {
 					File fileToUpload = new File(parameterValue);
 					if (!fileToUpload.isAbsolute()) {
-						fileToUpload = new File(fileToUpload.toString());
+						fileToUpload = new File(getScriptFile().getParent()
+								+ File.separator + fileToUpload.toString());
+						// System.out.print(fileToUpload);
 					}
 					partsList.add(new FilePart(parameterName, fileToUpload));
 				} else {
@@ -190,6 +188,7 @@ public class Request extends Common {
 					.getParams()));
 		}
 		status = session.getHttpClient().executeMethod(post);
+		/*
 		if (status == 303) {
 			String location = post.getResponseHeader("Location").toString()
 					.substring(10);
@@ -200,23 +199,24 @@ public class Request extends Common {
 			responseBody = getResponseBody(getMethod);
 		} else {
 			responseBody = getResponseBody(post);
-		}
+		}*/
+		responseBody = getResponseBody(post);
 		return post;
 	}
 
 	private HttpMethod get() throws Exception {
 		GetMethod get = new GetMethod();
 		get.setURI(uri);
-		get.setFollowRedirects(true);
+		//get.setFollowRedirects(true);
 		status = session.getHttpClient().executeMethod(get);
 		responseBody = getResponseBody(get);
 		return get;
 	}
-	
+
 	private HttpMethod delete() throws Exception {
 		DeleteMethod delete = new DeleteMethod();
 		delete.setURI(uri);
-		delete.setFollowRedirects(true);
+		//delete.setFollowRedirects(true);
 		status = session.getHttpClient().executeMethod(delete);
 		responseBody = getResponseBody(delete);
 		return delete;

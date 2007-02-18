@@ -19,10 +19,12 @@
 
 package uk.org.tlocke.imprimatur;
 
-import org.apache.commons.httpclient.Credentials;
+import java.io.File;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Session extends Common {
@@ -30,20 +32,22 @@ class Session extends Common {
 
 	private Test test;
 
-	public Session(Test test, Element testElement) {
-		super(test, testElement);
+	public Session(Test test, Element testElement, File scriptFile) {
+		super(test, testElement, scriptFile);
 		this.test = test;
+		/*
 		if (getCredentials() != null) {
 			setCredentials(getCredentials());
 		}
+		*/
 	}
-
+/*
 	void setCredentials(Credentials credentials) {
 		client.getState().setCredentials(
 				new AuthScope(getHostname(), getPort(), AuthScope.ANY_REALM),
 				getCredentials());
 	}
-
+*/
 	public Test getTest() {
 		return test;
 	}
@@ -54,10 +58,18 @@ class Session extends Common {
 
 	public void process() throws Exception {
 		super.process();
-		NodeList requests = getElement().getElementsByTagName("request");
+		client.getState().setCredentials(
+				new AuthScope(getHostname(), getPort(), AuthScope.ANY_REALM),
+				getCredentials());
+		NodeList requests = getElement().getChildNodes();
+		//.getElementsByTagName("request");
 
 		for (int i = 0; i < requests.getLength(); i++) {
-			new Request(this, (Element) requests.item(i)).process();
+			Node node = requests.item(i);
+			if (node.getNodeName().equals("request")) {
+			new Request(this, (Element) requests.item(i), getScriptFile()).process();
+			}
 		}
+		// new Request(this, getElement(), getScriptFile()).process();
 	}
 }

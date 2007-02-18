@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.9 2006-08-01 13:57:39 tlocke_m Exp $
+     $Id: build.xml,v 1.10 2007-02-18 14:44:59 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.9 2006-08-01 13:57:39 tlocke_m Exp $
+     $Id: build.xml,v 1.10 2007-02-18 14:44:59 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -563,13 +563,14 @@
     </condition>
 
     <fail if="failTest01" message="Failed test 01" />
-
+<!--
    <exec failonerror="true" executable="grep">
       <arg value="Failed regexp check" />
 
       <arg value="${qa.home}/01/out.txt" />
     </exec>
- 
+ -->
+  	
    <java jar="${dist.home}/imprimatur.jar" fork="true"
     resultproperty="error.code.02"
     >
