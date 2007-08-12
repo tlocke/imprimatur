@@ -86,7 +86,7 @@ public class Request extends Common {
 
 	void process() throws Exception {
 		super.process();
-		uri = new URI("http", "", getHostname(), getPort(), path);
+		uri = new URI("http", null, getHostname(), getPort(), path);
 		System.out.println("Request: '" + uri.toString() + "'.");
 		int maxTries = 1;
 		long delay = 0;
@@ -133,7 +133,7 @@ public class Request extends Common {
 			if (status != desiredResponseCode) {
 				throw new UserException("Failed response code check.\n"
 						+ "	desired response code: " + desiredResponseCode
-						+ "\n" + "	Actual response code: " + status + "\n"
+						+ "\n Actual response code: " + status + "\n"
 						+ "  Actual response body:\n" + responseBody);
 			}
 		}
@@ -156,7 +156,7 @@ public class Request extends Common {
 			for (int k = 0; k < parameterElements.getLength(); k++) {
 				Element parameterElement = (Element) parameterElements.item(k);
 				post.setParameter(parameterElement.getAttribute("name"),
-						parameterElement.getAttribute("value"));
+						parameterElement.getTextContent());
 			}
 		} else if (enctype.equals("multipart/form-data")) {
 			List<Part> partsList = new ArrayList<Part>();
@@ -165,7 +165,7 @@ public class Request extends Common {
 
 				Element parameterElement = (Element) parameterElements.item(k);
 				String parameterName = parameterElement.getAttribute("name");
-				String parameterValue = parameterElement.getAttribute("value");
+				String parameterValue = parameterElement.getTextContent();
 				if (parameterElement.getAttribute("type").equals("file")) {
 					File fileToUpload = new File(parameterValue);
 					if (!fileToUpload.isAbsolute()) {
@@ -188,18 +188,6 @@ public class Request extends Common {
 					.getParams()));
 		}
 		status = session.getHttpClient().executeMethod(post);
-		/*
-		if (status == 303) {
-			String location = post.getResponseHeader("Location").toString()
-					.substring(10);
-			post.releaseConnection();
-			System.out.println("Redirecting to: '" + location + "'.");
-			GetMethod getMethod = new GetMethod(location);
-			status = session.getHttpClient().executeMethod(getMethod);
-			responseBody = getResponseBody(getMethod);
-		} else {
-			responseBody = getResponseBody(post);
-		}*/
 		responseBody = getResponseBody(post);
 		return post;
 	}
@@ -207,7 +195,6 @@ public class Request extends Common {
 	private HttpMethod get() throws Exception {
 		GetMethod get = new GetMethod();
 		get.setURI(uri);
-		//get.setFollowRedirects(true);
 		status = session.getHttpClient().executeMethod(get);
 		responseBody = getResponseBody(get);
 		return get;
@@ -216,7 +203,6 @@ public class Request extends Common {
 	private HttpMethod delete() throws Exception {
 		DeleteMethod delete = new DeleteMethod();
 		delete.setURI(uri);
-		//delete.setFollowRedirects(true);
 		status = session.getHttpClient().executeMethod(delete);
 		responseBody = getResponseBody(delete);
 		return delete;

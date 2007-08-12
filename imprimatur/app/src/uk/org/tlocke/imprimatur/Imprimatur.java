@@ -42,27 +42,6 @@ private File testFile;
 		super(null, doc.getDocumentElement(), testFile);
 		this.doc = doc;
 		this.testFile = testFile;
-		// File scriptDirectory;
-		/*
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			builder.setEntityResolver(new ImprimaturResolver());
-			doc = builder.parse(testFile);
-			/*
-			 * scriptDirectory = new File(testFile.getParent()); try {
-			 * FileInputStream propertiesFile = new FileInputStream(System
-			 * .getProperty("user.home") + File.separator +
-			 * "imprimatur.properties"); properties.load(propertiesFile); }
-			 * catch (FileNotFoundException e) {
-			 * System.out.println(e.getMessage()); // Do nothing }
-			 */
-		/*
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
 	}
 
 	public Document getDocument() {
@@ -106,14 +85,9 @@ private File testFile;
 		System.exit(passed ? 0 : 1);
 	}
 
-	/*
-	 * private String getProperty(String name) { return
-	 * properties.getProperty(name, name); }
-	 */
 	public void process() throws Exception {
 		super.process();
 		NodeList testGroups = doc.getDocumentElement().getChildNodes();
-		//.getElementsByTagName("test-group");
 		for (int i = 0; i < testGroups.getLength(); i++) {
 			Node node = testGroups.item(i);
 			if (node.getNodeName().equals("test-group")) {
@@ -127,10 +101,10 @@ private File testFile;
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId
-					.equals("http://imprimatur.wikispaces.com/space/showimage/imprimatur-003.dtd")) {
+					.equals("http://imprimatur.sourceforge.net/imprimatur-004.dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
-								"uk/org/tlocke/imprimatur/imprimatur-003.dtd"));
+								"uk/org/tlocke/imprimatur/imprimatur-004.dtd"));
 				return inputSource;
 			} else {
 				return null;

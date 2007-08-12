@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE imprimatur PUBLIC 
-    "-//Imprimatur DTD 003//EN"
-    "http://imprimatur.sourceforge.net/imprimatur-003.dtd">
+    "-//Imprimatur DTD 004//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-004.dtd">
 <imprimatur port="80" hostname="www.google.com">
 	<test name="Check Google homepage">
 		<request path="/">

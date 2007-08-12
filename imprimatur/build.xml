@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.10 2007-02-18 14:44:59 tlocke_m Exp $
+     $Id: build.xml,v 1.11 2007-08-12 15:15:37 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.10 2007-02-18 14:44:59 tlocke_m Exp $
+     $Id: build.xml,v 1.11 2007-08-12 15:15:37 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -142,7 +142,7 @@
 
   <property name="app.build" value="${build.home}/app" />
 
-  <property name="javalib.home" value="${user.home}/local/java" />
+  <property name="javalib.home" value="${user.home}/java" />
 
   <property name="catalina.home"
   value="${javalib.home}/jakarta-tomcat" />
@@ -197,7 +197,7 @@
 -->
   <taskdef name="deploy"
   classname="org.apache.catalina.ant.DeployTask" />
-	
+
   <taskdef name="list"
   classname="org.apache.catalina.ant.ListTask" />
 
@@ -563,6 +563,7 @@
     </condition>
 
     <fail if="failTest01" message="Failed test 01" />
+
 <!--
    <exec failonerror="true" executable="grep">
       <arg value="Failed regexp check" />
@@ -632,8 +633,6 @@
 
   <property name="main-class"
   value="uk.org.tlocke.imprimatur.Imprimatur" />
-
-  <property name="javalib.home" value="${user.home}/local/java" />
 
   <path id="app.compile.classpath">
     <fileset dir="${lib.dir}">

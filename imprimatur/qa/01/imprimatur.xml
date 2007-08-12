@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE imprimatur PUBLIC 
-    "-//Imprimatur DTD 003//EN"
-    "http://imprimatur.wikispaces.com/space/showimage/imprimatur-003.dtd">
+    "-//Imprimatur DTD 004//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-004.dtd">
 <imprimatur port="8080" hostname="localhost">
 	<!-- Test that if there's a test group, the following test is executed -->
 	<test-group></test-group>
