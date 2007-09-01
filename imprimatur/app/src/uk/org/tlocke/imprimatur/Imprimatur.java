@@ -101,10 +101,10 @@ private File testFile;
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId
-					.equals("http://imprimatur.sourceforge.net/imprimatur-004.dtd")) {
+					.equals("http://imprimatur.sourceforge.net/imprimatur-005.dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
-								"uk/org/tlocke/imprimatur/imprimatur-004.dtd"));
+								"uk/org/tlocke/imprimatur/imprimatur-005.dtd"));
 				return inputSource;
 			} else {
 				return null;

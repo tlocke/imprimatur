@@ -21,4 +21,14 @@
   		<auth-method>BASIC</auth-method>
   		<realm-name>Imprimatur Darkness</realm-name>
 	</login-config>
+	<servlet>
+		<servlet-name>echo</servlet-name>
+		<servlet-class>
+			uk.org.tlocke.imprimatur.qa.Echo
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>echo</servlet-name>
+		<url-pattern>/echo</url-pattern>
+	</servlet-mapping>
 </web-app>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE imprimatur PUBLIC 
-    "-//Imprimatur DTD 004//EN"
-    "http://imprimatur.sourceforge.net/imprimatur-004.dtd">
+    "-//Imprimatur DTD 005//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-005.dtd">
 <imprimatur port="8080" hostname="localhost">
   <test name="multiple-regexes">
     <request path="/imprimatur/test_01.html" method="get">

@@ -52,7 +52,7 @@ public class Request extends Common {
 
 	String responseBody;
 
-	NodeList parameterElements;
+	List<Control> controls = new ArrayList<Control>();
 
 	URI uri;
 
@@ -69,7 +69,10 @@ public class Request extends Common {
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
 		enctype = request.getAttribute("enctype");
-		parameterElements = request.getElementsByTagName("parameter");
+		NodeList controlElements = request.getElementsByTagName("control");
+		for (int i = 0; i < controlElements.getLength(); i++) {
+			controls.add(new Control((Element) controlElements.item(i)));
+		}
 		responseCodeElements = request.getElementsByTagName("response-code");
 		NodeList refreshElements = request.getElementsByTagName("refresh");
 		if (refreshElements.getLength() > 0) {
@@ -153,32 +156,25 @@ public class Request extends Common {
 		// post.setFollowRedirects(true);
 		post.setURI(uri);
 		if (enctype.equals("application/x-www-form-urlencoded")) {
-			for (int k = 0; k < parameterElements.getLength(); k++) {
-				Element parameterElement = (Element) parameterElements.item(k);
-				post.setParameter(parameterElement.getAttribute("name"),
-						parameterElement.getTextContent());
+			for (Control control : controls) {
+				post.setParameter(control.getName(), control.getValue());
 			}
 		} else if (enctype.equals("multipart/form-data")) {
 			List<Part> partsList = new ArrayList<Part>();
 
-			for (int k = 0; k < parameterElements.getLength(); k++) {
-
-				Element parameterElement = (Element) parameterElements.item(k);
-				String parameterName = parameterElement.getAttribute("name");
-				String parameterValue = parameterElement.getTextContent();
-				if (parameterElement.getAttribute("type").equals("file")) {
-					File fileToUpload = new File(parameterValue);
+			for (Control control : controls) {
+				if (control.getType().equals("file")) {
+					File fileToUpload = new File(control.getValue());
 					if (!fileToUpload.isAbsolute()) {
 						fileToUpload = new File(getScriptFile().getParent()
 								+ File.separator + fileToUpload.toString());
-						// System.out.print(fileToUpload);
 					}
-					partsList.add(new FilePart(parameterName, fileToUpload));
-				} else {
 					partsList
-							.add(new StringPart(parameterName, parameterValue));
+							.add(new FilePart(control.getName(), fileToUpload));
+				} else {
+					partsList.add(new StringPart(control.getName(), control
+							.getValue()));
 				}
-
 			}
 			Part[] parts = new Part[partsList.size()];
 			for (int j = 0; j < partsList.size(); j++) {

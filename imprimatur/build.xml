@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.11 2007-08-12 15:15:37 tlocke_m Exp $
+     $Id: build.xml,v 1.12 2007-09-01 14:24:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.11 2007-08-12 15:15:37 tlocke_m Exp $
+     $Id: build.xml,v 1.12 2007-09-01 14:24:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -296,6 +296,7 @@
       </fileset>
 
 <!-- Include all elements that Tomcat exposes to applications -->
+    	<!--
       <pathelement location="${catalina.home}/common/classes" />
 
       <fileset dir="${catalina.home}/common/endorsed">
@@ -311,10 +312,13 @@
       <fileset dir="${catalina.home}/shared/lib">
         <include name="*.jar" />
       </fileset>
+      -->
+    	<fileset dir="${catalina.home}/lib">
+    					<include name="*.jar" />
+    				</fileset>
     </path>
 
 <!-- Compile Java classes as necessary -->
-  	<!--
     <mkdir dir="${war.build}/WEB-INF/classes" />
 
     <javac srcdir="${war.src}"
@@ -323,13 +327,11 @@
     optimize="${compile.optimize}">
       <classpath refid="war.compile.classpath" />
     </javac>
--->
+  	
 <!-- Copy application resources -->
-  	<!--
     <copy todir="${war.build}/WEB-INF/classes">
       <fileset dir="${war.src}" excludes="**/*.java" />
     </copy>
-    -->
   </target>
 
 <!-- ==================== Dist Target ===================================== -->
@@ -551,13 +553,12 @@
   <target name="test" depends="dist"
   description="Tests the application">
   	<antcall target="install"/>
-<!-- Tests to see if multiple regexps work -->
+<!-- Tests that pass if imprimatur test fail -->
     <java jar="${dist.home}/imprimatur.jar" fork="true"
     resultproperty="error.code.01"
     output="${qa.home}/01/out.txt">
       <arg value="${qa.home}/01/imprimatur.xml" />
     </java>
-
     <condition property="failTest01">
       <equals arg1="${error.code.01}" arg2="0" />
     </condition>
@@ -571,7 +572,6 @@
       <arg value="${qa.home}/01/out.txt" />
     </exec>
  -->
-  	
    <java jar="${dist.home}/imprimatur.jar" fork="true"
     resultproperty="error.code.02"
     >
@@ -595,7 +595,7 @@
      </condition>
 
      <fail if="failTest03" message="Failed test 03" />
-  	
+ 
   	<!-- Test the examples -->
   	<!--
   	<property name="dist.tests" value="${dist.home}/tests" />

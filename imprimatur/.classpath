@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="app/src"/>
+	<classpathentry kind="src" path="war/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-fileupload-1.2/lib/commons-fileupload-1.2.jar"/>
 	<classpathentry kind="var" path="JAVA_LIB_HOME/commons-httpclient-3.0.1/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
