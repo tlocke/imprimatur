@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Tony Locke
+ * Copyright 2005-2008 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -98,13 +98,15 @@ private File testFile;
 	}
 
 	static private class ImprimaturResolver implements EntityResolver {
+		static private final String VERSION = "007";
+		
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
 			if (systemId
-					.equals("http://imprimatur.sourceforge.net/imprimatur-005.dtd")) {
+					.equals("http://imprimatur.sourceforge.net/imprimatur-" + VERSION + ".dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
-								"uk/org/tlocke/imprimatur/imprimatur-005.dtd"));
+								"uk/org/tlocke/imprimatur/imprimatur-" + VERSION + ".dtd"));
 				return inputSource;
 			} else {
 				return null;

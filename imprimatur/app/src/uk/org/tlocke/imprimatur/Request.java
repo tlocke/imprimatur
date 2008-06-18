@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Tony Locke
+ * Copyright 2005-2008 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -20,17 +20,20 @@
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.FileRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
@@ -46,11 +49,11 @@ public class Request extends Common {
 
 	String path;
 
-	String enctype;
-
 	int status;
 
-	String responseBody;
+	File bodyFile = null;
+
+	String response;
 
 	List<Control> controls = new ArrayList<Control>();
 
@@ -62,13 +65,27 @@ public class Request extends Common {
 
 	NodeList regexpElements;
 
+	NodeList headerElements;
+
 	public Request(Session session, Element request, File scriptFile)
 			throws Exception {
 		super(session, request, scriptFile);
 		this.session = session;
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
-		enctype = request.getAttribute("enctype");
+		String bodyFileName = request.getAttribute("body-file");
+
+		if (bodyFileName.length() != 0) {
+			bodyFile = new File(bodyFileName);
+			if (!bodyFile.isAbsolute()) {
+				bodyFile = new File(getScriptFile().getParent()
+						+ File.separator + bodyFile.toString());
+			}
+			if (!bodyFile.exists()) {
+				throw new Exception("The request body file '"
+						+ bodyFile.toString() + "' does not exist.");
+			}
+		}
 		NodeList controlElements = request.getElementsByTagName("control");
 		for (int i = 0; i < controlElements.getLength(); i++) {
 			controls.add(new Control((Element) controlElements.item(i)));
@@ -82,9 +99,7 @@ public class Request extends Common {
 		if (method == null || method.length() == 0) {
 			method = "get";
 		}
-		if (enctype == null || enctype.length() == 0) {
-			enctype = "application/x-www-form-urlencoded";
-		}
+		headerElements = request.getElementsByTagName("header");
 	}
 
 	void process() throws Exception {
@@ -120,12 +135,31 @@ public class Request extends Common {
 		if (method.equals("post")) {
 			httpMethod = post();
 		} else if (method.equals("get")) {
-			httpMethod = get();
+			httpMethod = new GetMethod();
 		} else if (method.equals("delete")) {
-			httpMethod = delete();
+			httpMethod = new DeleteMethod();
+		} else if (method.equals("put")) {
+			httpMethod = put();
 		} else {
 			throw new UserException("Unknown request method type: " + method);
 		}
+		for (int i = 0; i < headerElements.getLength(); i++) {
+			Element headerElement = (Element) headerElements.item(i);
+			httpMethod.addRequestHeader(headerElement.getAttribute("name"),
+					headerElement.getAttribute("value"));
+		}
+		httpMethod.setURI(uri);
+		status = session.getHttpClient().executeMethod(httpMethod);
+		Logger logger = Logger.getLogger("org.apache.commons.httpclient");
+		logger.setLevel(Level.SEVERE);
+		StringBuilder responseBuilder = new StringBuilder();
+		for (Header header : httpMethod.getResponseHeaders()) {
+			responseBuilder.append(header.toExternalForm());
+		}
+		responseBuilder.append(" \r\n");
+		responseBuilder.append(httpMethod.getResponseBodyAsString());
+		response = responseBuilder.toString();
+		logger.setLevel(Level.ALL);
 		httpMethod.releaseConnection();
 
 		if (responseCodeElements.getLength() > 0) {
@@ -137,79 +171,77 @@ public class Request extends Common {
 				throw new UserException("Failed response code check.\n"
 						+ "	desired response code: " + desiredResponseCode
 						+ "\n Actual response code: " + status + "\n"
-						+ "  Actual response body:\n" + responseBody);
+						+ "  Actual response body:\n" + response);
 			}
 		}
-		String responseBodyNoBreaks = responseBody.replaceAll("\\p{Cntrl}", "");
+		String responseBodyNoBreaks = response.replaceAll("\\p{Cntrl}", "");
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
 			String pattern = regexpElement.getAttribute("pattern");
 			if (!responseBodyNoBreaks.matches(pattern)) {
 				throw new UserException("Failed regexp check: '" + pattern
-						+ "'. Response:\n" + responseBody);
+						+ "'. Response:\n" + response);
 			}
 		}
 	}
 
-	private HttpMethod post() throws Exception {
-		PostMethod post = new PostMethod();
-		// post.setFollowRedirects(true);
-		post.setURI(uri);
-		if (enctype.equals("application/x-www-form-urlencoded")) {
-			for (Control control : controls) {
-				post.setParameter(control.getName(), control.getValue());
-			}
-		} else if (enctype.equals("multipart/form-data")) {
-			List<Part> partsList = new ArrayList<Part>();
+	private PostMethod post() throws Exception {
+		PostMethod method = new PostMethod();
 
+		if (bodyFile == null) {
+			boolean hasFile = false;
 			for (Control control : controls) {
 				if (control.getType().equals("file")) {
-					File fileToUpload = new File(control.getValue());
-					if (!fileToUpload.isAbsolute()) {
-						fileToUpload = new File(getScriptFile().getParent()
-								+ File.separator + fileToUpload.toString());
-					}
-					partsList
-							.add(new FilePart(control.getName(), fileToUpload));
-				} else {
-					partsList.add(new StringPart(control.getName(), control
-							.getValue()));
+					hasFile = true;
+					break;
 				}
 			}
-			Part[] parts = new Part[partsList.size()];
-			for (int j = 0; j < partsList.size(); j++) {
-				parts[j] = (Part) partsList.get(j);
+			if (hasFile) {
+				List<Part> partsList = new ArrayList<Part>();
+
+				for (Control control : controls) {
+					if (control.getType().equals("file")) {
+						File fileToUpload = new File(control.getValue());
+						if (!fileToUpload.isAbsolute()) {
+							fileToUpload = new File(getScriptFile().getParent()
+									+ File.separator + fileToUpload.toString());
+						}
+						if (!fileToUpload.exists()) {
+							throw new Exception("The file '"
+									+ fileToUpload.toString()
+									+ "' does not exist.");
+						}
+						partsList.add(new FilePart(control.getName(),
+								fileToUpload));
+					} else {
+						partsList.add(new StringPart(control.getName(), control
+								.getValue()));
+					}
+				}
+				Part[] parts = new Part[partsList.size()];
+				for (int j = 0; j < partsList.size(); j++) {
+					parts[j] = (Part) partsList.get(j);
+				}
+				method.setRequestEntity(new MultipartRequestEntity(parts,
+						method.getParams()));
+			} else {
+				for (Control control : controls) {
+					method.setParameter(control.getName(), control.getValue());
+				}
 			}
-			post.setRequestEntity(new MultipartRequestEntity(parts, post
-					.getParams()));
+		} else {
+			RequestEntity body = new FileRequestEntity(bodyFile, null);
+			method.setRequestEntity(body);
 		}
-		status = session.getHttpClient().executeMethod(post);
-		responseBody = getResponseBody(post);
-		return post;
+		return method;
 	}
 
-	private HttpMethod get() throws Exception {
-		GetMethod get = new GetMethod();
-		get.setURI(uri);
-		status = session.getHttpClient().executeMethod(get);
-		responseBody = getResponseBody(get);
-		return get;
-	}
-
-	private HttpMethod delete() throws Exception {
-		DeleteMethod delete = new DeleteMethod();
-		delete.setURI(uri);
-		status = session.getHttpClient().executeMethod(delete);
-		responseBody = getResponseBody(delete);
-		return delete;
-	}
-
-	private String getResponseBody(HttpMethod method) throws IOException {
-		String body = null;
-		Logger logger = Logger.getLogger("org.apache.commons.httpclient");
-		logger.setLevel(Level.SEVERE);
-		body = method.getResponseBodyAsString();
-		logger.setLevel(Level.ALL);
-		return body;
+	private PutMethod put() throws Exception {
+		PutMethod method = new PutMethod();
+		if (bodyFile != null) {
+			RequestEntity body = new FileRequestEntity(bodyFile, null);
+			method.setRequestEntity(body);
+		}
+		return method;
 	}
 }
