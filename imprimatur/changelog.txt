@@ -1,3 +1,6 @@
-For bug fixes and feature requests please see:
+* Changed so that a regex matches if it's found anywhere within the string.
+* In regexes, a dot character now matches line terminators as well.
+
+For other bug fixes and feature requests please see:
 
 http://sourceforge.net/tracker/?group_id=145016

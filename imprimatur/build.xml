@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.13 2008-06-18 21:01:04 tlocke_m Exp $
+     $Id: build.xml,v 1.14 2009-05-12 23:22:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.13 2008-06-18 21:01:04 tlocke_m Exp $
+     $Id: build.xml,v 1.14 2009-05-12 23:22:06 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -313,7 +313,7 @@
         <include name="*.jar" />
       </fileset>
       -->
-    	<fileset dir="${catalina.home}/common/lib">
+    	<fileset dir="${catalina.home}/lib">
     		<include name="*.jar" />
     	</fileset>
     </path>

@@ -2,13 +2,13 @@
 <!DOCTYPE imprimatur PUBLIC 
     "-//Imprimatur DTD 007//EN"
     "http://imprimatur.sourceforge.net/imprimatur-007.dtd">
-<imprimatur port="8180" hostname="localhost">
+<imprimatur port="8080" hostname="localhost">
   <test name="multiple-regexes">
     <request path="/imprimatur/test_01.html" method="get">
       <response-code value="200" />
 
-      <regex pattern=".*Anything. Nothing..*"/>
-      <regex pattern=".*third-class.*"/>
+      <regex pattern="Anything. Nothing."/>
+      <regex pattern="third-class"/>
     </request>
   </test>
 </imprimatur>

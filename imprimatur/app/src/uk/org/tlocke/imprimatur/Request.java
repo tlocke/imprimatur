@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2008 Tony Locke
+ * Copyright 2005-2009 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
@@ -174,14 +175,19 @@ public class Request extends Common {
 						+ "  Actual response body:\n" + response);
 			}
 		}
-		String responseBodyNoBreaks = response.replaceAll("\\p{Cntrl}", "");
+		//String responseBodyNoBreaks = response.replaceAll("\\p{Cntrl}", "");
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
-			String pattern = regexpElement.getAttribute("pattern");
-			if (!responseBodyNoBreaks.matches(pattern)) {
-				throw new UserException("Failed regexp check: '" + pattern
+			String patternStr = regexpElement.getAttribute("pattern");
+			if (!Pattern.compile(patternStr, Pattern.DOTALL).matcher(response).find()) {
+				throw new UserException("Failed regexp check: '" + patternStr
 						+ "'. Response:\n" + response);
 			}
+			//if (!responseBodyNoBreaks.matches(pattern)) {
+			//	System.err.print("Leisure matches Leisure" + "POSTLeisure".matches("Leisure"));
+			//	throw new UserException("Failed regexp check: '" + pattern
+			//			+ "'. Response:\n" + responseBodyNoBreaks + "\n\nLeisure matches Leisure" + "Leisure".matches("Leisure"));
+			//}
 		}
 	}
 

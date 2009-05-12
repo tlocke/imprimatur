@@ -2,7 +2,7 @@
 <!DOCTYPE imprimatur PUBLIC 
     "-//Imprimatur DTD 007//EN"
     "http://imprimatur.sourceforge.net/imprimatur-007.dtd">
-<imprimatur port="8180" hostname="localhost">
+<imprimatur port="8080" hostname="localhost">
 	<test name="single regex success">
 		<request path="/imprimatur/test_01.html" method="get">
 			<response-code value="200" />
@@ -18,8 +18,7 @@
 		</request>
 	</test>
 	<test name="relative file upload success">
-		<request enctype="multipart/form-data"
-			path="/imprimatur/test_01.html" method="post">
+		<request path="/imprimatur/test_01.html" method="post">
 			<control type="file" name="crome-file"
 				value="crome-file.txt" />
 			<response-code value="200" />
@@ -30,7 +29,7 @@
 			<control name="quote" value="Leisure is the mother of philosophy."/>
 			<response-code value="200" />
 		
-			<regex pattern=".*Leisure is the mother of philosophy\..*" />
+			<regex pattern="Leisure" />
 		</request>
 	</test>
 	<test name="Put with entity file.">
