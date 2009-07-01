@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.FileRequestEntity;
@@ -43,30 +44,31 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class Request extends Common {
+	private Session session;
 
-	Session session;
+	private String method;
 
-	String method;
+	private String path;
 
-	String path;
+	private int status;
 
-	int status;
+	private File bodyFile = null;
 
-	File bodyFile = null;
+	private String response;
 
-	String response;
+	private List<Control> controls = new ArrayList<Control>();
 
-	List<Control> controls = new ArrayList<Control>();
+	private URI uri;
 
-	URI uri;
+	private NodeList responseCodeElements;
 
-	NodeList responseCodeElements;
+	private Element refreshElement = null;
 
-	Element refreshElement = null;
+	private NodeList regexpElements;
 
-	NodeList regexpElements;
-
-	NodeList headerElements;
+	private NodeList headerElements;
+	
+	private boolean followRedirects = false;
 
 	public Request(Session session, Element request, File scriptFile)
 			throws Exception {
@@ -74,6 +76,9 @@ public class Request extends Common {
 		this.session = session;
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
+		if (request.getAttribute("follow-redirects").equals("true")) {
+			followRedirects = true;
+		}
 		String bodyFileName = request.getAttribute("body-file");
 
 		if (bodyFileName.length() != 0) {
@@ -151,6 +156,16 @@ public class Request extends Common {
 		}
 		httpMethod.setURI(uri);
 		status = session.getHttpClient().executeMethod(httpMethod);
+		if (followRedirects && (status == HttpStatus.SC_SEE_OTHER || status == HttpStatus.SC_MOVED_TEMPORARILY)) {
+			String location = httpMethod.getResponseHeader("Location").getValue();
+			Debug.print("Location: " + location);
+			Debug.print("Location URI " + new URI(location, true));
+			httpMethod.releaseConnection();
+			httpMethod = new GetMethod();
+			httpMethod.setFollowRedirects(true);
+			httpMethod.setURI(new URI(location, true));
+			status = session.getHttpClient().executeMethod(httpMethod);
+		}
 		Logger logger = Logger.getLogger("org.apache.commons.httpclient");
 		logger.setLevel(Level.SEVERE);
 		StringBuilder responseBuilder = new StringBuilder();

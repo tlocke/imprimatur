@@ -1,3 +1,7 @@
+* Can now set a request to follow redirects.
+
+15
+
 * Changed so that a regex matches if it's found anywhere within the string.
 * In regexes, a dot character now matches line terminators as well.
 
