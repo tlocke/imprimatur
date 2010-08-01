@@ -110,7 +110,7 @@ public class Request extends Common {
 
 	void process() throws Exception {
 		super.process();
-		uri = new URI("http", null, getHostname(), getPort(), path);
+		uri = new URI(getScheme(), null, getHostname(), getPort(), path);
 		System.out.println("Request: '" + uri.toString() + "'.");
 		int maxTries = 1;
 		long delay = 0;

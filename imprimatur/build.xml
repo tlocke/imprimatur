@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.14 2009-05-12 23:22:06 tlocke_m Exp $
+     $Id: build.xml,v 1.15 2010-08-01 22:51:56 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.14 2009-05-12 23:22:06 tlocke_m Exp $
+     $Id: build.xml,v 1.15 2010-08-01 22:51:56 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -168,8 +168,8 @@
 	  value="commons-httpclient-3.1.jar" />
 	<property name="commons-httpclient"
 	  value="${commons-httpclient_path}/${commons-httpclient_jar}" />
-  <property name="commons-codec_path" value="commons-codec-1.3" />
-  <property name="commons-codec_jar" value="commons-codec-1.3.jar" />
+  <property name="commons-codec_path" value="commons-codec-1.4" />
+  <property name="commons-codec_jar" value="commons-codec-1.4.jar" />
   <property name="commons-codec" value="${commons-codec_path}/${commons-codec_jar}" />
 
   <property name="commons-logging_path" value="commons-logging-1.1.1" />
@@ -332,6 +332,9 @@
     <copy todir="${war.build}/WEB-INF/classes">
       <fileset dir="${war.src}" excludes="**/*.java" />
     </copy>
+  	
+	<jar jarfile="${build.home}/imprimatur.war" basedir="${war.build}" />
+
   </target>
 
 <!-- ==================== Dist Target ===================================== -->
@@ -397,8 +400,9 @@
   description="Install application to servlet container">
     <deploy url="${manager.url}" username="${manager.username}"
     password="${manager.password}" path="${app.path}"
-    localWar="file://${war.build}" />
+    war="file://${build.home}/imprimatur.war" />
   </target>
+
 
 <!-- ==================== Javadoc Target ================================== -->
 <!--

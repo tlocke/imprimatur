@@ -12,18 +12,28 @@ public abstract class Common {
 
 	private Element element;
 
+	private String scheme;
+
 	private String hostname;
 
 	private int port;
 
 	private Credentials credentials;
-	
+
 	private File scriptFile;
 
 	Common(Common superCommon, Element element, File scriptFile) {
 		this.superCommon = superCommon;
 		this.element = element;
 		setScriptFile(scriptFile);
+	}
+
+	public String getScheme() {
+		return scheme;
+	}
+
+	private void setScheme(String scheme) {
+		this.scheme = scheme;
 	}
 
 	public String getHostname() {
@@ -49,23 +59,27 @@ public abstract class Common {
 	Element getElement() {
 		return element;
 	}
-	
+
 	public File getScriptFile() {
 		return scriptFile;
 	}
-	
+
 	private void setScriptFile(File scriptFile) {
 		this.scriptFile = scriptFile;
 	}
 
 	void process() throws Exception {
-		String portString = element == null ? "" : element.getAttribute("port");
+		String scheme = element.getAttribute("scheme");
+		setScheme(scheme.length() == 0 ? superCommon.getScheme() : scheme);
+
+		String portString = element.getAttribute("port");
 		setPort(portString.length() == 0 ? superCommon.getPort() : Integer
 				.parseInt(portString));
-		String hostName = element == null ? "" : element
-				.getAttribute("hostname");
+
+		String hostName = element.getAttribute("hostname");
 		setHostname(hostName.length() == 0 ? superCommon.getHostname()
-				: element.getAttribute("hostname"));
+				: hostName);
+
 		NodeList credentialsList = element.getElementsByTagName("credentials");
 		if (credentialsList.getLength() > 0) {
 			Element credentialsElement = (Element) credentialsList.item(0);

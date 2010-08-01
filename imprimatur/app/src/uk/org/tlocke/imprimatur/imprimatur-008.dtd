@@ -1,0 +1,109 @@
+<!-- Imprimatur DTD.
+
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 008//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-008.dtd">
+
+Script for testing web applications.
+
+-->
+
+<!--
+	The document root.
+ -->
+
+<!ELEMENT imprimatur (credentials?, (test-group | test | session | request)*)>
+	<!ATTLIST imprimatur name CDATA #IMPLIED>
+	<!ATTLIST imprimatur scheme (http|https) "http">
+	<!ATTLIST imprimatur port CDATA "80">
+	<!ATTLIST imprimatur hostname CDATA "localhost">
+	
+<!--
+	Simply to group tests
+-->
+
+<!ELEMENT test-group (credentials?, (test | session | request)*)>
+	<!ATTLIST test-group scheme (http|https) #IMPLIED>
+	<!ATTLIST test-group name CDATA #IMPLIED>
+	<!ATTLIST test-group port CDATA #IMPLIED>
+	<!ATTLIST test-group hostname CDATA #IMPLIED>
+
+<!--
+	Holds a discrete test
+-->
+
+<!ELEMENT test (credentials?, (session | request)*)>
+	<!ATTLIST test name CDATA #IMPLIED>
+	<!ATTLIST test scheme (http|https) #IMPLIED>
+	<!ATTLIST test port CDATA #IMPLIED>
+	<!ATTLIST test hostname CDATA #IMPLIED>
+    
+<!--
+	Represents a browser session
+-->
+
+<!ELEMENT session (credentials?, (request*))>
+    <!ATTLIST session scheme (http|https) #IMPLIED>
+	<!ATTLIST session port CDATA #IMPLIED>
+	<!ATTLIST session hostname CDATA #IMPLIED>
+	<!ATTLIST session path CDATA #IMPLIED>
+    
+<!--
+	Represents an HTTP request
+-->
+
+<!ELEMENT request (credentials?, (header | refresh | control | regex | response-code)*)>
+    <!ATTLIST request scheme (http|https) #IMPLIED>
+	<!ATTLIST request port CDATA #IMPLIED>
+	<!ATTLIST request hostname CDATA #IMPLIED>
+	<!ATTLIST request path CDATA #IMPLIED>
+	<!ATTLIST request method (get|post|delete|head|put) "get">
+	<!ATTLIST request follow-redirects (true|false) "false">
+	<!ATTLIST request body-file CDATA #IMPLIED>
+
+<!--
+	An HTTP header sent with the request
+-->
+
+<!ELEMENT header EMPTY>
+	<!ATTLIST header name CDATA #REQUIRED>
+	<!ATTLIST header value CDATA #REQUIRED>
+
+<!--
+	An HTML control
+-->
+
+<!ELEMENT control (#PCDATA)>
+	<!ATTLIST control type (text|file) "text">
+	<!ATTLIST control name CDATA #REQUIRED>
+	<!ATTLIST control value CDATA #IMPLIED>
+
+<!--
+	Keep repeating the test every 'wait' milliseconds a maximum of 'max' times
+-->
+
+<!ELEMENT refresh EMPTY>
+	<!ATTLIST refresh wait CDATA "500">
+	<!ATTLIST refresh max CDATA "10">
+
+<!--
+	A regular expression to look for in an HTTP response
+-->
+
+<!ELEMENT regex EMPTY>
+	<!ATTLIST regex pattern CDATA #REQUIRED>
+	
+<!--
+	A test for an HTTP status code in the response
+-->
+
+<!ELEMENT response-code EMPTY>
+	<!ATTLIST response-code value CDATA #REQUIRED>
+		
+<!--
+	Credentials for authentication
+-->
+
+<!ELEMENT credentials EMPTY>
+	<!ATTLIST credentials username CDATA #REQUIRED>
+	<!ATTLIST credentials password CDATA #REQUIRED>

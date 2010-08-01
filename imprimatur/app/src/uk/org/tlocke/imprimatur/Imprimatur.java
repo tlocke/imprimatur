@@ -35,7 +35,8 @@ import org.xml.sax.SAXException;
 
 public class Imprimatur extends Common {
 	private Document doc;
-private File testFile;
+	private File testFile;
+
 	// private Properties properties = new Properties();
 
 	public Imprimatur(Document doc, File testFile) {
@@ -47,7 +48,7 @@ private File testFile;
 	public Document getDocument() {
 		return doc;
 	}
-	
+
 	public File getTestFile() {
 		return testFile;
 	}
@@ -91,22 +92,23 @@ private File testFile;
 		for (int i = 0; i < testGroups.getLength(); i++) {
 			Node node = testGroups.item(i);
 			if (node.getNodeName().equals("test-group")) {
-			new TestGroup(this, (Element) testGroups.item(i), getScriptFile()).process();
+				new TestGroup(this, (Element) node, getScriptFile()).process();
 			}
 		}
 		new TestGroup(this, getElement(), getScriptFile()).process();
 	}
 
 	static private class ImprimaturResolver implements EntityResolver {
-		static private final String VERSION = "007";
-		
+		static private final String VERSION = "008";
+
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {
-			if (systemId
-					.equals("http://imprimatur.sourceforge.net/imprimatur-" + VERSION + ".dtd")) {
+			if (systemId.equals("http://imprimatur.sourceforge.net/imprimatur-"
+					+ VERSION + ".dtd")) {
 				InputSource inputSource = new InputSource(Imprimatur.class
 						.getClassLoader().getResourceAsStream(
-								"uk/org/tlocke/imprimatur/imprimatur-" + VERSION + ".dtd"));
+								"uk/org/tlocke/imprimatur/imprimatur-"
+										+ VERSION + ".dtd"));
 				return inputSource;
 			} else {
 				return null;
