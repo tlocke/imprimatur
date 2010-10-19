@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2008 Tony Locke
+ * Copyright 2005-2010 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -37,8 +37,6 @@ public class Imprimatur extends Common {
 	private Document doc;
 	private File testFile;
 
-	// private Properties properties = new Properties();
-
 	public Imprimatur(Document doc, File testFile) {
 		super(null, doc.getDocumentElement(), testFile);
 		this.doc = doc;
@@ -58,10 +56,10 @@ public class Imprimatur extends Common {
 		boolean passed = false;
 
 		if (args == null || args.length == 0) {
-			fileName = "../tests/default.xml";
-		} else {
-			fileName = args[0];
+			throw new UserException("Please specify a file as an argument.");
 		}
+
+		fileName = args[0];
 		File file = new File(fileName);
 		if (!file.exists()) {
 			throw new UserException("The file: '" + file.getCanonicalPath()

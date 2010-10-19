@@ -67,7 +67,7 @@ public class Request extends Common {
 	private NodeList regexpElements;
 
 	private NodeList headerElements;
-	
+
 	private boolean followRedirects = false;
 
 	public Request(Session session, Element request, File scriptFile)
@@ -142,6 +142,9 @@ public class Request extends Common {
 			httpMethod = post();
 		} else if (method.equals("get")) {
 			httpMethod = new GetMethod();
+			if (!followRedirects) {
+				httpMethod.setFollowRedirects(false);
+			}
 		} else if (method.equals("delete")) {
 			httpMethod = new DeleteMethod();
 		} else if (method.equals("put")) {
@@ -156,8 +159,10 @@ public class Request extends Common {
 		}
 		httpMethod.setURI(uri);
 		status = session.getHttpClient().executeMethod(httpMethod);
-		if (followRedirects && (status == HttpStatus.SC_SEE_OTHER || status == HttpStatus.SC_MOVED_TEMPORARILY)) {
-			String location = httpMethod.getResponseHeader("Location").getValue();
+		if (followRedirects
+				&& (status == HttpStatus.SC_SEE_OTHER || status == HttpStatus.SC_MOVED_TEMPORARILY)) {
+			String location = httpMethod.getResponseHeader("Location")
+					.getValue();
 			Debug.print("Location: " + location);
 			Debug.print("Location URI " + new URI(location, true));
 			httpMethod.releaseConnection();
@@ -190,19 +195,15 @@ public class Request extends Common {
 						+ "  Actual response body:\n" + response);
 			}
 		}
-		//String responseBodyNoBreaks = response.replaceAll("\\p{Cntrl}", "");
+		
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
 			String patternStr = regexpElement.getAttribute("pattern");
-			if (!Pattern.compile(patternStr, Pattern.DOTALL).matcher(response).find()) {
+			if (!Pattern.compile(patternStr, Pattern.DOTALL).matcher(response)
+					.find()) {
 				throw new UserException("Failed regexp check: '" + patternStr
 						+ "'. Response:\n" + response);
 			}
-			//if (!responseBodyNoBreaks.matches(pattern)) {
-			//	System.err.print("Leisure matches Leisure" + "POSTLeisure".matches("Leisure"));
-			//	throw new UserException("Failed regexp check: '" + pattern
-			//			+ "'. Response:\n" + responseBodyNoBreaks + "\n\nLeisure matches Leisure" + "Leisure".matches("Leisure"));
-			//}
 		}
 	}
 
