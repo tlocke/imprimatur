@@ -1,9 +1,10 @@
+* Added support for HTTP HEAD requests.
+
+18
+
 * Gets don't follow redirects by default.
-
 * Fixed example given in tests directory.
-
 * If no arguments are given on the command line, throws an exception saying no file specified.
-
 
 17
 

@@ -7,38 +7,41 @@
 		<request path="/imprimatur/test_01.html" method="get">
 			<response-code value="200" />
 
-			<regex pattern=".*inexhaustible.*" />
+			<regex pattern="inexhaustible" />
 		</request>
 	</test>
 	<test name="credentials success">
 		<credentials username="conrad" password="kurtz" />
-		<request path="/imprimatur/test_01_credentials.html"
-			method="get">
+		<request path="/imprimatur/test_01_credentials.html" method="get">
 			<response-code value="200" />
 		</request>
 	</test>
 	<test name="relative file upload success">
 		<request path="/imprimatur/test_01.html" method="post">
-			<control type="file" name="crome-file"
-				value="crome-file.txt" />
+			<control type="file" name="crome-file" value="crome-file.txt" />
 			<response-code value="200" />
 		</request>
 	</test>
 	<test name="Post with control value as 'value' attribute.">
 		<request path="/imprimatur/echo" method="post">
-			<control name="quote" value="Leisure is the mother of philosophy."/>
+			<control name="quote" value="Leisure is the mother of philosophy." />
 			<response-code value="200" />
-		
+
 			<regex pattern="Leisure" />
 		</request>
 	</test>
 	<test name="Put with entity file.">
-		<request path="/imprimatur/echo" method="put" body-file="body.txt" >
-			<header name="Content-Type" value="text/plain"/>
-			
+		<request path="/imprimatur/echo" method="put" body-file="body.txt">
+			<header name="Content-Type" value="text/plain" />
+
 			<response-code value="200" />
 			<regex pattern=".*text\/plain.*" />
 			<regex pattern=".*The price of freedom is eternal vigilance\..*" />
+		</request>
+	</test>
+	<test name="HTTP HEAD request">
+		<request path="/imprimatur/test_01.html" method="head">
+			<response-code value="200" />
 		</request>
 	</test>
 </imprimatur>

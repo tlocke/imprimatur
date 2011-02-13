@@ -18,7 +18,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.15 2010-08-01 22:51:56 tlocke_m Exp $
+     $Id: build.xml,v 1.16 2011-02-13 17:02:36 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -47,7 +47,7 @@
                              image files), including the WEB-INF subdirectory
                              and its configuration file contents.
 
-     $Id: build.xml,v 1.15 2010-08-01 22:51:56 tlocke_m Exp $
+     $Id: build.xml,v 1.16 2011-02-13 17:02:36 tlocke_m Exp $
 -->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -57,8 +57,8 @@
      set to the current working directory.
 -->
 <project name="Imprimatur" default="compile" basedir=".">
-<!-- ===================== Property Definitions =========================== -->
-<!--
+	<!-- ===================== Property Definitions =========================== -->
+	<!--
 
   Each of the following properties are used in the build script.
   Values for these properties are set by the first place they are
@@ -81,12 +81,12 @@
   "build.properties" files as well as in the "build.xml" script.
 
 -->
-  <property file="build.properties" />
+	<property file="build.properties" />
 
-  <property file="${user.home}/build.properties" />
+	<property file="${user.home}/build.properties" />
 
-<!-- ==================== File and Directory Names ======================== -->
-<!--
+	<!-- ==================== File and Directory Names ======================== -->
+	<!--
 
   These properties generally define file and directory names (or paths) that
   affect where the build process stores its outputs.
@@ -126,58 +126,43 @@
                        commands via the "/manager" web application)
 
 -->
-  <property name="app.name" value="imprimatur" />
+	<property name="app.name" value="imprimatur" />
 
-  <property name="app.path" value="/${app.name}" />
+	<property name="app.path" value="/${app.name}" />
 
-  <property name="app.version" value="0.1-dev" />
+	<property name="app.version" value="0.1-dev" />
 
-  <property name="wardir" value="${basedir}/war" />
+	<property name="wardir" value="${basedir}/war" />
 
-  <property name="appdir" value="${basedir}/app" />
+	<property name="appdir" value="${basedir}/app" />
 
-  <property name="build.home" value="${basedir}/build" />
+	<property name="build.home" value="${basedir}/build" />
 
-  <property name="war.build" value="${build.home}/war" />
+	<property name="war.build" value="${build.home}/war" />
 
-  <property name="app.build" value="${build.home}/app" />
+	<property name="app.build" value="${build.home}/app" />
 
-  <property name="javalib.home" value="${user.home}/java" />
+	<property name="javalib.home" value="${user.home}/java" />
 
-  <property name="catalina.home"
-  value="${javalib.home}/jakarta-tomcat" />
+	<property name="catalina.home" value="${javalib.home}/jakarta-tomcat" />
 
-  <property name="dist.home" value="${basedir}/dist" />
+	<property name="dist.home" value="${basedir}/dist" />
 
-  <property name="docs.home" value="${basedir}/docs" />
+	<property name="docs.home" value="${basedir}/docs" />
 
-  <property name="manager.url"
-  value="http://localhost:8080/manager" />
+	<property name="manager.url" value="http://localhost:8080/manager" />
 
-  <property name="war.src" value="${wardir}/src" />
+	<property name="war.src" value="${wardir}/src" />
 
-  <property name="app.src" value="${appdir}/src" />
+	<property name="app.src" value="${appdir}/src" />
 
-  <property name="web.home" value="${wardir}/web" />
+	<property name="web.home" value="${wardir}/web" />
 
-  <property name="qa.home" value="${basedir}/qa" />
+	<property name="qa.home" value="${basedir}/qa" />
 
-  <property name="commons-httpclient_path"
-  value="commons-httpclient-3.1" />
-	<property name="commons-httpclient_jar"
-	  value="commons-httpclient-3.1.jar" />
-	<property name="commons-httpclient"
-	  value="${commons-httpclient_path}/${commons-httpclient_jar}" />
-  <property name="commons-codec_path" value="commons-codec-1.4" />
-  <property name="commons-codec_jar" value="commons-codec-1.4.jar" />
-  <property name="commons-codec" value="${commons-codec_path}/${commons-codec_jar}" />
 
-  <property name="commons-logging_path" value="commons-logging-1.1.1" />
-  <property name="commons-logging_jar" value="commons-logging-1.1.1.jar" />
-  <property name="commons-logging" value="${commons-logging_path}/${commons-logging_jar}" />
-
-<!-- ================== Custom Ant Task Definitions ======================= -->
-<!--
+	<!-- ================== Custom Ant Task Definitions ======================= -->
+	<!--
 
   These properties define custom tasks for the Ant build tool that interact
   with the "/manager" web application installed with Tomcat 5.  Before they
@@ -195,20 +180,16 @@
   of these tasks, see <http://localhost:8080/tomcat-docs/manager-howto.html>.
 
 -->
-  <taskdef name="deploy"
-  classname="org.apache.catalina.ant.DeployTask" />
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
 
-  <taskdef name="list"
-  classname="org.apache.catalina.ant.ListTask" />
+	<taskdef name="list" classname="org.apache.catalina.ant.ListTask" />
 
-  <taskdef name="reload"
-  classname="org.apache.catalina.ant.ReloadTask" />
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask" />
 
-  <taskdef name="undeploy"
-  classname="org.apache.catalina.ant.UndeployTask" />
+	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
 
-<!--  ==================== Compilation Control Options ==================== -->
-<!--
+	<!--  ==================== Compilation Control Options ==================== -->
+	<!--
 
   These properties control option settings on the Javac compiler when it
   is invoked using the <javac> task.
@@ -220,14 +201,14 @@
   compile.optimize     Should compilation include the optimize option?
 
 -->
-  <property name="compile.debug" value="true" />
+	<property name="compile.debug" value="true" />
 
-  <property name="compile.deprecation" value="false" />
+	<property name="compile.deprecation" value="false" />
 
-  <property name="compile.optimize" value="true" />
+	<property name="compile.optimize" value="true" />
 
-<!-- ==================== External Dependencies =========================== -->
-<!--
+	<!-- ==================== External Dependencies =========================== -->
+	<!--
 
   Use property values to define the locations of external JAR files on which
   your application will depend.  In general, these values will be used for
@@ -242,32 +223,30 @@
   files that you are going to include inside your "/WEB-INF/lib" directory.
 
 -->
-<!-- ==================== All Target ====================================== -->
-<!--
+	<!-- ==================== All Target ====================================== -->
+	<!--
 
   The "all" target is a shortcut for running the "clean" target followed
   by the "compile" target, to force a complete recompile.
 
 -->
-  <target name="all" depends="clean, compile"
-  description="Clean build and dist directories, then compile" />
+	<target name="all" depends="clean, compile" description="Clean build and dist directories, then compile" />
 
-<!-- ==================== Clean Target ==================================== -->
-<!--
+	<!-- ==================== Clean Target ==================================== -->
+	<!--
 
   The "clean" target deletes any previous "build" and "dist" directory,
   so that you can be ensured the application can be built from scratch.
 
 -->
-  <target name="clean"
-  description="Delete old build and dist directories">
-    <delete dir="${build.home}" />
+	<target name="clean" description="Delete old build and dist directories">
+		<delete dir="${build.home}" />
 
-    <delete dir="${dist.home}" />
-  </target>
+		<delete dir="${dist.home}" />
+	</target>
 
-<!-- ==================== Compile Target ================================== -->
-<!--
+	<!-- ==================== Compile Target ================================== -->
+	<!--
 
   The "compile" target transforms source files (from your "src" directory)
   into object files in the appropriate location in the build directory.
@@ -275,8 +254,8 @@
   unpacked directory hierarchy under "/WEB-INF/classes".
 
 -->
-<!-- ==================== Compilation Classpath =========================== -->
-<!--
+	<!-- ==================== Compilation Classpath =========================== -->
+	<!--
 
       Rather than relying on the CLASSPATH environment variable, Ant includes
       features that makes it easy to dynamically construct the classpath you
@@ -286,59 +265,37 @@
       that you explicitly added.
 
     -->
-  <target name="compile" depends="compile-war, compile-app" />
+	<target name="compile" depends="compile-war, compile-app" />
 
-  <target name="compile-war" depends="prepare-war"
-  description="Compile Java sources">
-    <path id="war.compile.classpath">
-      <fileset dir="${war.build}/WEB-INF/lib">
-        <include name="*.jar" />
-      </fileset>
+	<target name="compile-war" depends="prepare-war" description="Compile Java sources">
+		<path id="war.compile.classpath">
+			<fileset dir="${war.build}/WEB-INF/lib">
+				<include name="*.jar" />
+			</fileset>
 
-<!-- Include all elements that Tomcat exposes to applications -->
-    	<!--
-      <pathelement location="${catalina.home}/common/classes" />
+			<fileset dir="${catalina.home}/lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
 
-      <fileset dir="${catalina.home}/common/endorsed">
-        <include name="*.jar" />
-      </fileset>
+		<!-- Compile Java classes as necessary -->
+		<mkdir dir="${war.build}/WEB-INF/classes" />
 
-      <fileset dir="${catalina.home}/common/lib">
-        <include name="*.jar" />
-      </fileset>
+		<javac srcdir="${war.src}" destdir="${war.build}/WEB-INF/classes" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+			<classpath refid="war.compile.classpath" />
+		</javac>
 
-      <pathelement location="${catalina.home}/shared/classes" />
+		<!-- Copy application resources -->
+		<copy todir="${war.build}/WEB-INF/classes">
+			<fileset dir="${war.src}" excludes="**/*.java" />
+		</copy>
 
-      <fileset dir="${catalina.home}/shared/lib">
-        <include name="*.jar" />
-      </fileset>
-      -->
-    	<fileset dir="${catalina.home}/lib">
-    		<include name="*.jar" />
-    	</fileset>
-    </path>
+		<jar jarfile="${build.home}/imprimatur.war" basedir="${war.build}" />
 
-<!-- Compile Java classes as necessary -->
-    <mkdir dir="${war.build}/WEB-INF/classes" />
+	</target>
 
-    <javac srcdir="${war.src}"
-    destdir="${war.build}/WEB-INF/classes" debug="${compile.debug}"
-    deprecation="${compile.deprecation}"
-    optimize="${compile.optimize}">
-      <classpath refid="war.compile.classpath" />
-    </javac>
-  	
-<!-- Copy application resources -->
-    <copy todir="${war.build}/WEB-INF/classes">
-      <fileset dir="${war.src}" excludes="**/*.java" />
-    </copy>
-  	
-	<jar jarfile="${build.home}/imprimatur.war" basedir="${war.build}" />
-
-  </target>
-
-<!-- ==================== Dist Target ===================================== -->
-<!--
+	<!-- ==================== Dist Target ===================================== -->
+	<!--
 
   The "dist" target creates a binary distribution of your application
   in a directory structure ready to be archived in a tar.gz or zip file.
@@ -350,35 +307,34 @@
   * "javadoc" so that the application Javadocs will have been created
 
 -->
-  <target name="dist" depends="app-jar"
-  description="Create binary distribution">
-  	<copy file="${app.build}/imprimatur.jar" toDir="${dist.home}"/>      
-  	<copy todir="${dist.home}/tests">
-  	      <fileset dir="${appdir}/tests" />
-  	    </copy>
-<!-- Copy documentation subdirectories -->
-  	<!--
+	<target name="dist" depends="app-jar" description="Create binary distribution">
+		<copy file="${app.build}/imprimatur.jar" toDir="${dist.home}" />
+		<copy todir="${dist.home}/tests">
+			<fileset dir="${appdir}/tests" />
+		</copy>
+		<!-- Copy documentation subdirectories -->
+		<!--
   	<copy todir="${dist.home}/docs">
   	  	      <fileset dir="${appdir}/docs" />
   	  	    </copy>
   	-->
-<!-- Create application JAR file -->
-  	
-  	<!--
+		<!-- Create application JAR file -->
+
+		<!--
     <jar jarfile="${dist.home}/${app.name}.war"
     basedir="${build.home}" />
 -->
-<!-- Copy additional files to ${dist.home} as necessary -->
-    <copy todir="${dist.home}/lib">
-       <fileset dir="${app.build}/lib" />
-     </copy>
-  	<copy file="${basedir}/changelog.txt" toDir="${dist.home}"/>
-  	<copy file="${basedir}/gpl.txt" toDir="${dist.home}"/>
-  	<copy file="${basedir}/readme.txt" toDir="${dist.home}"/>
-  </target>
+		<!-- Copy additional files to ${dist.home} as necessary -->
+		<copy todir="${dist.home}/lib">
+			<fileset dir="${app.build}/lib" />
+		</copy>
+		<copy file="${basedir}/changelog.txt" toDir="${dist.home}" />
+		<copy file="${basedir}/gpl.txt" toDir="${dist.home}" />
+		<copy file="${basedir}/readme.txt" toDir="${dist.home}" />
+	</target>
 
-<!-- ==================== Install Target ================================== -->
-<!--
+	<!-- ==================== Install Target ================================== -->
+	<!--
 
   The "install" target tells the specified Tomcat 5 installation to dynamically
   install this web application and make it available for execution.  It does
@@ -396,16 +352,13 @@
   NOTE:  This is the logical opposite of the "remove" target.
 
 -->
-  <target name="install" depends="compile"
-  description="Install application to servlet container">
-    <deploy url="${manager.url}" username="${manager.username}"
-    password="${manager.password}" path="${app.path}"
-    war="file://${build.home}/imprimatur.war" />
-  </target>
+	<target name="install" depends="compile" description="Install application to servlet container">
+		<deploy url="${manager.url}" username="${manager.username}" password="${manager.password}" path="${app.path}" war="file://${build.home}/imprimatur.war" />
+	</target>
 
 
-<!-- ==================== Javadoc Target ================================== -->
-<!--
+	<!-- ==================== Javadoc Target ================================== -->
+	<!--
 
   The "javadoc" target creates Javadoc API documentation for the Java
   classes included in your application.  Normally, this is only required
@@ -413,19 +366,18 @@
   target in case the developer wants to create Javadocs independently.
 
 -->
-  <target name="javadoc" depends="compile"
-  description="Create Javadoc API documentation">
-    <mkdir dir="${dist.home}/docs/api" />
-<!--
+	<target name="javadoc" depends="compile" description="Create Javadoc API documentation">
+		<mkdir dir="${dist.home}/docs/api" />
+		<!--
     <javadoc sourcepath="${src.home}"
     destdir="${dist.home}/docs/api" packagenames="*">
       <classpath refid="war.compile.classpath" />
     </javadoc>
     -->
-  </target>
+	</target>
 
-<!-- ====================== List Target =================================== -->
-<!--
+	<!-- ====================== List Target =================================== -->
+	<!--
 
   The "list" target asks the specified Tomcat 5 installation to list the
   currently running web applications, either loaded at startup time or
@@ -433,14 +385,12 @@
   application you are currently developing has been installed.
 
 -->
-  <target name="list"
-  description="List installed applications on servlet container">
-    <list url="${manager.url}" username="${manager.username}"
-    password="${manager.password}" />
-  </target>
+	<target name="list" description="List installed applications on servlet container">
+		<list url="${manager.url}" username="${manager.username}" password="${manager.password}" />
+	</target>
 
-<!-- ==================== Prepare Target ================================== -->
-<!--
+	<!-- ==================== Prepare Target ================================== -->
+	<!--
 
   The "prepare" target is used to create the "build" destination directory,
   and copy the static contents of your web application to it.  If you need
@@ -450,77 +400,32 @@
   Normally, this task is executed indirectly when needed.
 
 -->
-  <target name="prepare-war">
-<!-- Create build directories as needed -->
-    <mkdir dir="${build.home}" />
+	<target name="prepare-war">
+		<!-- Create build directories as needed -->
+		<mkdir dir="${build.home}" />
 
-    <mkdir dir="${war.build}" />
+		<mkdir dir="${war.build}" />
 
-    <mkdir dir="${war.build}/WEB-INF" />
+		<mkdir dir="${war.build}/WEB-INF" />
 
-    <mkdir dir="${war.build}/WEB-INF/classes" />
+		<mkdir dir="${war.build}/WEB-INF/classes" />
 
-<!-- Copy static content of this web application -->
-    <copy todir="${war.build}">
-      <fileset dir="${web.home}" />
-    </copy>
+		<!-- Copy static content of this web application -->
+		<copy todir="${war.build}">
+			<fileset dir="${web.home}" />
+		</copy>
 
-<!-- Copy external dependencies as required -->
-<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
-    <mkdir dir="${war.build}/WEB-INF/lib" />
+		<!-- Copy external dependencies as required -->
+		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+		<mkdir dir="${war.build}/WEB-INF/lib" />
 
-<!--
-    <copy todir="${war.build}/WEB-INF/lib"
-    file="${javalib.home}/jaf/activation.jar" />
 
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/javamail/mail.jar" />
+		<!-- Copy static files from external dependencies as needed -->
+		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+	</target>
 
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${user.home}/workspace/monad/lib/monad.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/hibernate3.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/dom4j-1.6.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/cglib-2.1.2.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/commons-collections-2.1.1.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/commons-logging-1.0.4.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/ehcache-1.1.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/jta.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/log4j-1.2.9.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/antlr-2.7.5H3.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/hibernate/lib/asm.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/commons-fileupload/commons-fileupload-1.0.jar" />
-
-    <copy todir="${build.home}/WEB-INF/lib"
-    file="${javalib.home}/ostermillerutils/ostermillerutils_1_04_03.jar" />
--->
-<!-- Copy static files from external dependencies as needed -->
-<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
-  </target>
-
-<!-- ==================== Reload Target =================================== -->
-<!--
+	<!-- ==================== Reload Target =================================== -->
+	<!--
 
   The "reload" signals the specified application Tomcat 5 to shut itself down
   and reload. This can be useful when the web application context is not
@@ -533,14 +438,12 @@
   then start the web application. 
 
 -->
-  <target name="reload" depends="compile"
-  description="Reload application on servlet container">
-    <reload url="${manager.url}" username="${manager.username}"
-    password="${manager.password}" path="${app.path}" />
-  </target>
+	<target name="reload" depends="compile" description="Reload application on servlet container">
+		<reload url="${manager.url}" username="${manager.username}" password="${manager.password}" path="${app.path}" />
+	</target>
 
-<!-- ==================== Remove Target =================================== -->
-<!--
+	<!-- ==================== Remove Target =================================== -->
+	<!--
 
   The "remove" target tells the specified Tomcat 5 installation to dynamically
   remove this web application from service.
@@ -548,60 +451,51 @@
   NOTE:  This is the logical opposite of the "install" target.
 
 -->
-  <target name="remove"
-  description="Remove application on servlet container">
-    <undeploy url="${manager.url}" username="${manager.username}"
-    password="${manager.password}" path="${app.path}" />
-  </target>
+	<target name="remove" description="Remove application on servlet container">
+		<undeploy url="${manager.url}" username="${manager.username}" password="${manager.password}" path="${app.path}" />
+	</target>
 
-  <target name="test" depends="dist"
-  description="Tests the application">
-  	<antcall target="install"/>
-<!-- Tests that pass if imprimatur test fail -->
-    <java jar="${dist.home}/imprimatur.jar" fork="true"
-    resultproperty="error.code.01"
-    output="${qa.home}/01/out.txt">
-      <arg value="${qa.home}/01/imprimatur.xml" />
-    </java>
-    <condition property="failTest01">
-      <equals arg1="${error.code.01}" arg2="0" />
-    </condition>
+	<target name="test" depends="dist" description="Tests the application">
+		<antcall target="install" />
+		<!-- Tests that pass if imprimatur test fail -->
+		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.01" output="${qa.home}/01/out.txt">
+			<arg value="${qa.home}/01/imprimatur.xml" />
+		</java>
+		<condition property="failTest01">
+			<equals arg1="${error.code.01}" arg2="0" />
+		</condition>
 
-    <fail if="failTest01" message="Failed test 01" />
+		<fail if="failTest01" message="Failed test 01" />
 
-<!--
+		<!--
    <exec failonerror="true" executable="grep">
       <arg value="Failed regexp check" />
 
       <arg value="${qa.home}/01/out.txt" />
     </exec>
  -->
-   <java jar="${dist.home}/imprimatur.jar" fork="true"
-    resultproperty="error.code.02"
-    >
-      <arg value="${qa.home}/02/imprimatur.xml" />
-    </java>
+		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.02">
+			<arg value="${qa.home}/02/imprimatur.xml" />
+		</java>
 
-    <condition property="failTest02">
-      <equals arg1="${error.code.02}" arg2="1" />
-    </condition>
+		<condition property="failTest02">
+			<equals arg1="${error.code.02}" arg2="1" />
+		</condition>
 
-    <fail if="failTest02" message="Failed test 02" />
+		<fail if="failTest02" message="Failed test 02" />
 
-    <java jar="${dist.home}/imprimatur.jar" fork="true"
-     resultproperty="error.code.03"
-     >
-       <arg value="${qa.home}/03/imprimatur.xml" />
-     </java>
+		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.03">
+			<arg value="${qa.home}/03/imprimatur.xml" />
+		</java>
 
-     <condition property="failTest03">
-       <equals arg1="${error.code.03}" arg2="1" />
-     </condition>
+		<condition property="failTest03">
+			<equals arg1="${error.code.03}" arg2="1" />
+		</condition>
 
-     <fail if="failTest03" message="Failed test 03" />
- 
-  	<!-- Test the examples -->
-  	<!--
+		<fail if="failTest03" message="Failed test 03" />
+
+		<!-- Test the examples -->
+		<!--
   	<property name="dist.tests" value="${dist.home}/tests" />
     <java jar="${dist.home}/imprimatur.jar" fork="true"
      resultproperty="error.code.example.01"
@@ -627,63 +521,56 @@
 
      <fail if="failTest.example.02" message="Example 02 doesn't work." />  	
      -->
-  </target>
+	</target>
 
-  <property name="classes.dir" value="${app.build}/classes" />
+	<target name="prepare-app">
+		<property name="classes.dir" value="${app.build}/classes" />
 
-  <property name="lib.dir" value="${app.build}/lib" />
+		<property name="lib.dir" value="${app.build}/lib" />
 
-  <property name="app.conf" value="${appdir}/conf" />
+		<property name="app.conf" value="${appdir}/conf" />
 
-  <property name="main-class"
-  value="uk.org.tlocke.imprimatur.Imprimatur" />
+		<property name="main-class" value="uk.org.tlocke.imprimatur.Imprimatur" />
 
-  <path id="app.compile.classpath">
-    <fileset dir="${lib.dir}">
-      <include name="*.jar" />
-    </fileset>
-  </path>
+		<path id="app.compile.classpath">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
 
-  <target name="prepare-app">
+		<mkdir dir="${app.build}" />
 
-    <mkdir dir="${app.build}" />
+		<mkdir dir="${classes.dir}" />
 
-    <mkdir dir="${classes.dir}" />
+		<copy todir="${lib.dir}">
+			<fileset dir="${javalib.home}/httpcomponents-client-4.1/lib" />
+		</copy>
 
-    <copy todir="${lib.dir}"
-    file="${javalib.home}/${commons-httpclient}" />
+		<mkdir dir="${classes.dir}" />
+	</target>
 
-    <copy todir="${lib.dir}"
-    file="${javalib.home}/${commons-codec}" />
+	<target name="compile-app" depends="prepare-app">
+		<javac srcdir="${app.src}" destdir="${classes.dir}" debug="true">
+			<classpath refid="app.compile.classpath" />
+		</javac>
 
-    <copy todir="${lib.dir}"
-    file="${javalib.home}/${commons-logging}" />
+		<!-- Copy application resources -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${app.src}" excludes="**/*.java" />
+		</copy>
+	</target>
 
-    <mkdir dir="${classes.dir}" />
-  </target>
+	<target name="app-jar" depends="compile-app">
+		<manifestclasspath property="jar.classpath" jarfile="${app.build}/${app.name}.jar">
+			<classpath refid="app.compile.classpath" />
+		</manifestclasspath>
 
-  <target name="compile-app" depends="prepare-app">
-    <javac srcdir="${app.src}" destdir="${classes.dir}"
-    debug="true">
-      <classpath refid="app.compile.classpath" />
-    </javac>
-  	
-  	<!-- Copy application resources -->
-  	    <copy  todir="${classes.dir}">
-  	      <fileset dir="${app.src}" excludes="**/*.java"/>
-  	    </copy>
-  </target>
-
-  <target name="app-jar" depends="compile-app">
-    <jar destfile="${app.build}/${app.name}.jar"
-    basedir="${classes.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="${main-class}" />
-
-        <attribute name="Class-Path"
-        value="lib/${commons-httpclient_jar} lib/${commons-codec_jar} lib/${commons-logging_jar}" />
-      </manifest>
-    </jar>
-  </target>
+		<jar destfile="${app.build}/${app.name}.jar" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+				<attribute name="Class-Path" value="${jar.classpath}" />
+			</manifest>
+		</jar>
+	</target>
 </project>
 

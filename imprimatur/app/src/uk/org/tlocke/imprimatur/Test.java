@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Tony Locke
+ * Copyright 2005-2011 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -21,13 +21,13 @@ package uk.org.tlocke.imprimatur;
 
 import java.io.File;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Test extends Common {
-	private HttpClient client = new HttpClient();
+	private DefaultHttpClient client = new DefaultHttpClient();
 
 	private TestGroup testGroup;
 
@@ -40,7 +40,7 @@ class Test extends Common {
 		return testGroup;
 	}
 
-	public HttpClient getHttpClient() {
+	public DefaultHttpClient getHttpClient() {
 		return client;
 	}
 

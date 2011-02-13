@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Tony Locke
+ * Copyright 2005-2011 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -21,14 +21,15 @@ package uk.org.tlocke.imprimatur;
 
 import java.io.File;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.auth.AuthScope;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Session extends Common {
-	private HttpClient client = new HttpClient();
+	private DefaultHttpClient client = new DefaultHttpClient();
 
 	private Test test;
 
@@ -36,18 +37,15 @@ class Session extends Common {
 		super(test, testElement, scriptFile);
 		this.test = test;
 		/*
-		if (getCredentials() != null) {
-			setCredentials(getCredentials());
-		}
-		*/
+		 * if (getCredentials() != null) { setCredentials(getCredentials()); }
+		 */
 	}
-/*
-	void setCredentials(Credentials credentials) {
-		client.getState().setCredentials(
-				new AuthScope(getHostname(), getPort(), AuthScope.ANY_REALM),
-				getCredentials());
-	}
-*/
+
+	/*
+	 * void setCredentials(Credentials credentials) {
+	 * client.getState().setCredentials( new AuthScope(getHostname(), getPort(),
+	 * AuthScope.ANY_REALM), getCredentials()); }
+	 */
 	public Test getTest() {
 		return test;
 	}
@@ -58,16 +56,19 @@ class Session extends Common {
 
 	public void process() throws Exception {
 		super.process();
-		client.getState().setCredentials(
-				new AuthScope(getHostname(), getPort(), AuthScope.ANY_REALM),
-				getCredentials());
+		if (getCredentials() != null) {
+			client.getCredentialsProvider()
+					.setCredentials(
+							new AuthScope(getHostname(), getPort(),
+									AuthScope.ANY_REALM), getCredentials());
+		}
 		NodeList requests = getElement().getChildNodes();
-		//.getElementsByTagName("request");
 
 		for (int i = 0; i < requests.getLength(); i++) {
 			Node node = requests.item(i);
 			if (node.getNodeName().equals("request")) {
-			new Request(this, (Element) requests.item(i), getScriptFile()).process();
+				new Request(this, (Element) requests.item(i), getScriptFile())
+						.process();
 			}
 		}
 		// new Request(this, getElement(), getScriptFile()).process();

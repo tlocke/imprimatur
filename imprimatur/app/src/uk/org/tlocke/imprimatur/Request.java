@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2009 Tony Locke
+ * Copyright 2005-2011 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -20,26 +20,35 @@
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.FileRequestEntity;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -50,11 +59,11 @@ public class Request extends Common {
 
 	private String path;
 
-	private int status;
+	private HttpResponse response;
 
 	private File bodyFile = null;
 
-	private String response;
+	private String responseStr;
 
 	private List<Control> controls = new ArrayList<Control>();
 
@@ -110,7 +119,7 @@ public class Request extends Common {
 
 	void process() throws Exception {
 		super.process();
-		uri = new URI(getScheme(), null, getHostname(), getPort(), path);
+		uri = URIUtils.createURI(getScheme(), getHostname(), getPort(), path, null, null);
 		System.out.println("Request: '" + uri.toString() + "'.");
 		int maxTries = 1;
 		long delay = 0;
@@ -137,78 +146,89 @@ public class Request extends Common {
 	}
 
 	private void processOnce() throws Exception {
-		HttpMethod httpMethod = null;
+		HttpRequestBase httpMethod = null;
 		if (method.equals("post")) {
 			httpMethod = post();
 		} else if (method.equals("get")) {
-			httpMethod = new GetMethod();
-			if (!followRedirects) {
-				httpMethod.setFollowRedirects(false);
-			}
+			httpMethod = new HttpGet();
 		} else if (method.equals("delete")) {
-			httpMethod = new DeleteMethod();
+			httpMethod = new HttpDelete();
 		} else if (method.equals("put")) {
 			httpMethod = put();
+		} else if (method.equals("head")) {
+			httpMethod = new HttpHead();
 		} else {
 			throw new UserException("Unknown request method type: " + method);
 		}
+		HttpParams params = httpMethod.getParams();
+		HttpClientParams.setRedirecting(params, followRedirects);
+		httpMethod.setParams(params);
 		for (int i = 0; i < headerElements.getLength(); i++) {
 			Element headerElement = (Element) headerElements.item(i);
-			httpMethod.addRequestHeader(headerElement.getAttribute("name"),
+			httpMethod.addHeader(headerElement.getAttribute("name"),
 					headerElement.getAttribute("value"));
 		}
 		httpMethod.setURI(uri);
-		status = session.getHttpClient().executeMethod(httpMethod);
+		response = session.getHttpClient().execute(httpMethod);
+		StatusLine statusLine = response.getStatusLine();
+		int statusCode = statusLine.getStatusCode();
+		/*
 		if (followRedirects
-				&& (status == HttpStatus.SC_SEE_OTHER || status == HttpStatus.SC_MOVED_TEMPORARILY)) {
-			String location = httpMethod.getResponseHeader("Location")
+				&& (statusCode == HttpServletResponse.SC_SEE_OTHER || statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY)) {
+			String location = response.getFirstHeader("Location")
 					.getValue();
 			Debug.print("Location: " + location);
-			Debug.print("Location URI " + new URI(location, true));
-			httpMethod.releaseConnection();
-			httpMethod = new GetMethod();
-			httpMethod.setFollowRedirects(true);
-			httpMethod.setURI(new URI(location, true));
-			status = session.getHttpClient().executeMethod(httpMethod);
+			HttpEntity entity = response.getEntity();
+			if (entity != null) {
+				EntityUtils.consume(entity);
+			}
+			httpMethod = new HttpGet(location);
+			response = session.getHttpClient().execute(httpMethod);
 		}
+		*/
 		Logger logger = Logger.getLogger("org.apache.commons.httpclient");
 		logger.setLevel(Level.SEVERE);
 		StringBuilder responseBuilder = new StringBuilder();
-		for (Header header : httpMethod.getResponseHeaders()) {
-			responseBuilder.append(header.toExternalForm());
+		
+		for (Header header : response.getAllHeaders()) {
+			responseBuilder.append(header.toString() + "\r\n");
 		}
-		responseBuilder.append(" \r\n");
-		responseBuilder.append(httpMethod.getResponseBodyAsString());
-		response = responseBuilder.toString();
+		responseBuilder.append("\r\n");
+		
+		HttpEntity entity = response.getEntity();
+		if (entity != null) {
+			responseBuilder.append(EntityUtils.toString(entity));
+		}
+
+		responseStr = responseBuilder.toString();
 		logger.setLevel(Level.ALL);
-		httpMethod.releaseConnection();
 
 		if (responseCodeElements.getLength() > 0) {
 			Element responseCodeElement = (Element) responseCodeElements
 					.item(0);
 			int desiredResponseCode = Integer.parseInt(responseCodeElement
 					.getAttribute("value"));
-			if (status != desiredResponseCode) {
+			if (statusCode != desiredResponseCode) {
 				throw new UserException("Failed response code check.\n"
 						+ "	desired response code: " + desiredResponseCode
-						+ "\n Actual response code: " + status + "\n"
-						+ "  Actual response body:\n" + response);
+						+ "\n Actual response code: " + statusCode + "\n"
+						+ "  Actual response body:\n" + responseStr);
 			}
 		}
-		
+
 		for (int i = 0; i < regexpElements.getLength(); i++) {
 			Element regexpElement = (Element) regexpElements.item(i);
 			String patternStr = regexpElement.getAttribute("pattern");
-			if (!Pattern.compile(patternStr, Pattern.DOTALL).matcher(response)
+			if (!Pattern.compile(patternStr, Pattern.DOTALL).matcher(responseStr)
 					.find()) {
 				throw new UserException("Failed regexp check: '" + patternStr
-						+ "'. Response:\n" + response);
+						+ "'. Response:\n" + responseStr);
 			}
 		}
 	}
 
-	private PostMethod post() throws Exception {
-		PostMethod method = new PostMethod();
+	private HttpPost post() throws Exception {
+		HttpPost method = new HttpPost();
 
 		if (bodyFile == null) {
 			boolean hasFile = false;
@@ -219,8 +239,7 @@ public class Request extends Common {
 				}
 			}
 			if (hasFile) {
-				List<Part> partsList = new ArrayList<Part>();
-
+				MultipartEntity me = new MultipartEntity();
 				for (Control control : controls) {
 					if (control.getType().equals("file")) {
 						File fileToUpload = new File(control.getValue());
@@ -233,36 +252,30 @@ public class Request extends Common {
 									+ fileToUpload.toString()
 									+ "' does not exist.");
 						}
-						partsList.add(new FilePart(control.getName(),
-								fileToUpload));
+						me.addPart(fileToUpload.getName(), new FileBody(fileToUpload));
 					} else {
-						partsList.add(new StringPart(control.getName(), control
+						me.addPart(control.getName(), new StringBody(control
 								.getValue()));
 					}
 				}
-				Part[] parts = new Part[partsList.size()];
-				for (int j = 0; j < partsList.size(); j++) {
-					parts[j] = (Part) partsList.get(j);
-				}
-				method.setRequestEntity(new MultipartRequestEntity(parts,
-						method.getParams()));
+				method.setEntity(me);
 			} else {
+				List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				for (Control control : controls) {
-					method.setParameter(control.getName(), control.getValue());
+					nvps.add(new BasicNameValuePair(control.getName(), control.getValue()));
 				}
+				method.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 			}
 		} else {
-			RequestEntity body = new FileRequestEntity(bodyFile, null);
-			method.setRequestEntity(body);
+			method.setEntity(new FileEntity(bodyFile, null));
 		}
 		return method;
 	}
 
-	private PutMethod put() throws Exception {
-		PutMethod method = new PutMethod();
+	private HttpPut put() throws Exception {
+		HttpPut method = new HttpPut();
 		if (bodyFile != null) {
-			RequestEntity body = new FileRequestEntity(bodyFile, null);
-			method.setRequestEntity(body);
+			method.setEntity(new FileEntity(bodyFile, null));
 		}
 		return method;
 	}
