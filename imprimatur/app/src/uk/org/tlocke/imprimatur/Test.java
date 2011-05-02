@@ -21,14 +21,11 @@ package uk.org.tlocke.imprimatur;
 
 import java.io.File;
 
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class Test extends Common {
-	private DefaultHttpClient client = new DefaultHttpClient();
-
 	private TestGroup testGroup;
 
 	public Test(TestGroup testGroup, Element testElement, File scriptFile) {
@@ -40,25 +37,20 @@ class Test extends Common {
 		return testGroup;
 	}
 
-	public DefaultHttpClient getHttpClient() {
-		return client;
-	}
-
 	public void process() throws Exception {
 		super.process();
 		if (getElement().getNodeName().equals("test")) {
 			System.out.println("Test: '" + getElement().getAttribute("name")
 					+ "'.");
 		}
-		NodeList sessions = getElement().getChildNodes();
+		NodeList requests = getElement().getChildNodes();
 
-		for (int i = 0; i < sessions.getLength(); i++) {
-			Node node = sessions.item(i);
-			if (node.getNodeName().equals("session")) {
-				new Session(this, (Element) sessions.item(i), getScriptFile())
+		for (int i = 0; i < requests.getLength(); i++) {
+			Node node = requests.item(i);
+			if (node.getNodeName().equals("request")) {
+				new Request(this, (Element) requests.item(i), getScriptFile())
 						.process();
 			}
 		}
-		new Session(this, getElement(), getScriptFile()).process();
 	}
 }

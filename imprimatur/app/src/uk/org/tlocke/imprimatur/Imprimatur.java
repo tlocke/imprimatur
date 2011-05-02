@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2010 Tony Locke
+ * Copyright 2005-2011 Tony Locke
  * 
  * This file is part of Imprimatur.
  * 
@@ -25,6 +25,7 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,6 +37,8 @@ import org.xml.sax.SAXException;
 public class Imprimatur extends Common {
 	private Document doc;
 	private File testFile;
+	
+	private DefaultHttpClient client = new DefaultHttpClient();
 
 	public Imprimatur(Document doc, File testFile) {
 		super(null, doc.getDocumentElement(), testFile);
@@ -49,6 +52,10 @@ public class Imprimatur extends Common {
 
 	public File getTestFile() {
 		return testFile;
+	}
+	
+	public DefaultHttpClient getHttpClient() {
+		return client;
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -97,7 +104,7 @@ public class Imprimatur extends Common {
 	}
 
 	static private class ImprimaturResolver implements EntityResolver {
-		static private final String VERSION = "008";
+		static private final String VERSION = "009";
 
 		public InputSource resolveEntity(String publicId, String systemId)
 				throws SAXException, IOException {

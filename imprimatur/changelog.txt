@@ -1,3 +1,7 @@
+* Removed <session> element.
+
+20
+
 * Added support for HTTP HEAD requests.
 
 18

@@ -32,6 +32,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -53,8 +55,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class Request extends Common {
-	private Session session;
-
 	private String method;
 
 	private String path;
@@ -77,12 +77,13 @@ public class Request extends Common {
 
 	private NodeList headerElements;
 
+	private NodeList credentialsElements;
+
 	private boolean followRedirects = false;
 
-	public Request(Session session, Element request, File scriptFile)
+	public Request(Test test, Element request, File scriptFile)
 			throws Exception {
-		super(session, request, scriptFile);
-		this.session = session;
+		super(test, request, scriptFile);
 		method = request.getAttribute("method");
 		path = request.getAttribute("path");
 		if (request.getAttribute("follow-redirects").equals("true")) {
@@ -115,10 +116,23 @@ public class Request extends Common {
 			method = "get";
 		}
 		headerElements = request.getElementsByTagName("header");
+		credentialsElements = request.getElementsByTagName("credentials");
 	}
 
 	void process() throws Exception {
 		super.process();
+		if (credentialsElements.getLength() > 0) {
+			Element credentialsElement = (Element) credentialsElements.item(0);
+			System.out.print("found credentials");
+			getHttpClient()
+					.getCredentialsProvider()
+					.setCredentials(
+							new AuthScope(getHostname(), getPort(),
+									AuthScope.ANY_REALM),
+							new UsernamePasswordCredentials(credentialsElement
+									.getAttribute("username"),
+									credentialsElement.getAttribute("password")));
+		}
 		uri = URIUtils.createURI(getScheme(), getHostname(), getPort(), path, null, null);
 		System.out.println("Request: '" + uri.toString() + "'.");
 		int maxTries = 1;
@@ -160,6 +174,7 @@ public class Request extends Common {
 		} else {
 			throw new UserException("Unknown request method type: " + method);
 		}
+
 		HttpParams params = httpMethod.getParams();
 		HttpClientParams.setRedirecting(params, followRedirects);
 		httpMethod.setParams(params);
@@ -169,7 +184,7 @@ public class Request extends Common {
 					headerElement.getAttribute("value"));
 		}
 		httpMethod.setURI(uri);
-		response = session.getHttpClient().execute(httpMethod);
+		response = getHttpClient().execute(httpMethod);
 		StatusLine statusLine = response.getStatusLine();
 		int statusCode = statusLine.getStatusCode();
 		/*
@@ -201,6 +216,7 @@ public class Request extends Common {
 		}
 
 		responseStr = responseBuilder.toString();
+		//Debug.print(responseStr);
 		logger.setLevel(Level.ALL);
 
 		if (responseCodeElements.getLength() > 0) {

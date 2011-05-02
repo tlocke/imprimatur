@@ -1,11 +1,8 @@
 package uk.org.tlocke.imprimatur;
 
 import java.io.File;
-
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public abstract class Common {
 	private Common superCommon;
@@ -18,14 +15,26 @@ public abstract class Common {
 
 	private int port;
 
-	private Credentials credentials;
-
 	private File scriptFile;
+
+	//private DefaultHttpClient client;
 
 	Common(Common superCommon, Element element, File scriptFile) {
 		this.superCommon = superCommon;
 		this.element = element;
 		setScriptFile(scriptFile);
+		if (superCommon == null) {
+		//	client = new DefaultHttpClient();
+		} else {
+		//	client = superCommon.getHttpClient();
+		}
+		/*
+		org.apache.http.client.CookieStore store = client.getCookieStore();
+		Debug.print("Common about to print cookies " + client.hashCode());
+		for (Cookie cookie : client.getCookieStore().getCookies()) {
+			Debug.print(cookie.toString());
+		}
+		*/
 	}
 
 	public String getScheme() {
@@ -52,10 +61,6 @@ public abstract class Common {
 		this.port = port;
 	}
 
-	public Credentials getCredentials() {
-		return credentials;
-	}
-
 	Element getElement() {
 		return element;
 	}
@@ -66,6 +71,10 @@ public abstract class Common {
 
 	private void setScriptFile(File scriptFile) {
 		this.scriptFile = scriptFile;
+	}
+
+	public DefaultHttpClient getHttpClient() {
+		return superCommon.getHttpClient();
 	}
 
 	void process() throws Exception {
@@ -79,15 +88,5 @@ public abstract class Common {
 		String hostName = element.getAttribute("hostname");
 		setHostname(hostName.length() == 0 ? superCommon.getHostname()
 				: hostName);
-
-		NodeList credentialsList = element.getElementsByTagName("credentials");
-		if (credentialsList.getLength() > 0) {
-			Element credentialsElement = (Element) credentialsList.item(0);
-			credentials = new UsernamePasswordCredentials(credentialsElement
-					.getAttribute("username"), credentialsElement
-					.getAttribute("password"));
-		} else if (superCommon != null) {
-			credentials = superCommon.getCredentials();
-		}
 	}
 }
