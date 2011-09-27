@@ -423,6 +423,8 @@
 
 		<!-- Copy static files from external dependencies as needed -->
 		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
+	<copy todir="${war.build}/WEB-INF/lib" file="${javalib.home}/commons-fileupload-1.2.2/lib/commons-fileupload-1.2.2.jar" />
+	<copy todir="${war.build}/WEB-INF/lib" file="${javalib.home}/commons-io-2.0.1/commons-io-2.0.1.jar" />
 	</target>
 
 	<!-- ==================== Reload Target =================================== -->

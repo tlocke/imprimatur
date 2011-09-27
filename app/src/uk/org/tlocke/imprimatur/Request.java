@@ -123,7 +123,6 @@ public class Request extends Common {
 		super.process();
 		if (credentialsElements.getLength() > 0) {
 			Element credentialsElement = (Element) credentialsElements.item(0);
-			System.out.print("found credentials");
 			getHttpClient()
 					.getCredentialsProvider()
 					.setCredentials(
@@ -268,7 +267,7 @@ public class Request extends Common {
 									+ fileToUpload.toString()
 									+ "' does not exist.");
 						}
-						me.addPart(fileToUpload.getName(), new FileBody(fileToUpload));
+						me.addPart(control.getName(), new FileBody(fileToUpload));
 					} else {
 						me.addPart(control.getName(), new StringBody(control
 								.getValue()));
