@@ -57,7 +57,7 @@
      set to the current working directory.
 -->
 
-<project name="Imprimatur" default="compile" basedir=".">
+<project name="Imprimatur" default="test" basedir=".">
 	<!-- ===================== Property Definitions =========================== -->
 	<!--
 
@@ -142,16 +142,16 @@
 	<property name="war.build" value="${build.home}/war" />
 
 	<property name="app.build" value="${build.home}/app" />
-
+	<property name="javalib.ubuntu" value="/usr/share/java" />
 	<property name="javalib.home" value="${user.home}/java" />
 
-	<property name="catalina.home" value="/usr/share/tomcat6" />
+	<property name="catalina.home" value="/usr/share/tomcat7" />
 
 	<property name="dist.home" value="${basedir}/dist" />
 
 	<property name="docs.home" value="${basedir}/docs" />
 
-	<property name="manager.url" value="http://localhost:8080/manager" />
+	<property name="manager.url" value="http://localhost:8080/manager/text" />
 
 	<property name="war.src" value="${wardir}/src" />
 
@@ -179,15 +179,19 @@
 
   For more information about the Manager web application, and the functionality
   of these tasks, see <http://localhost:8080/tomcat-docs/manager-howto.html>.
-
+       
 -->
-	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
+	<path id="war.compile.classpath">
+		<fileset dir="${war.build}/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
 
-	<taskdef name="list" classname="org.apache.catalina.ant.ListTask" />
+		<fileset dir="${catalina.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 
-	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask" />
-
-	<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="war.compile.classpath" />
 
 	<!--  ==================== Compilation Control Options ==================== -->
 	<!--
@@ -231,7 +235,6 @@
   by the "compile" target, to force a complete recompile.
 
 -->
-	<target name="all" depends="clean, compile" description="Clean build and dist directories, then compile" />
 
 	<!-- ==================== Clean Target ==================================== -->
 	<!--
@@ -266,18 +269,10 @@
       that you explicitly added.
 
     -->
-	<target name="compile" depends="compile-war, compile-app" />
+
 
 	<target name="compile-war" depends="prepare-war" description="Compile Java sources">
-		<path id="war.compile.classpath">
-			<fileset dir="${war.build}/WEB-INF/lib">
-				<include name="*.jar" />
-			</fileset>
 
-			<fileset dir="${catalina.home}/lib">
-				<include name="*.jar" />
-			</fileset>
-		</path>
 
 		<!-- Compile Java classes as necessary -->
 		<mkdir dir="${war.build}/WEB-INF/classes" />
@@ -353,7 +348,7 @@
   NOTE:  This is the logical opposite of the "remove" target.
 
 -->
-	<target name="install" depends="compile" description="Install application to servlet container">
+	<target name="install" depends="compile-war" description="Install application to servlet container">
 		<deploy url="${manager.url}" username="${manager.username}" password="${manager.password}" path="${app.path}" war="file://${build.home}/imprimatur.war" />
 	</target>
 
@@ -367,7 +362,7 @@
   target in case the developer wants to create Javadocs independently.
 
 -->
-	<target name="javadoc" depends="compile" description="Create Javadoc API documentation">
+	<target name="javadoc" depends="dist" description="Create Javadoc API documentation">
 		<mkdir dir="${dist.home}/docs/api" />
 		<!--
     <javadoc sourcepath="${src.home}"
@@ -423,8 +418,8 @@
 
 		<!-- Copy static files from external dependencies as needed -->
 		<!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
-	<copy todir="${war.build}/WEB-INF/lib" file="${javalib.home}/commons-fileupload-1.2.2/lib/commons-fileupload-1.2.2.jar" />
-	<copy todir="${war.build}/WEB-INF/lib" file="${javalib.home}/commons-io-2.0.1/commons-io-2.0.1.jar" />
+		<copy todir="${war.build}/WEB-INF/lib" file="${javalib.ubuntu}/commons-fileupload.jar" />
+		<copy todir="${war.build}/WEB-INF/lib" file="${javalib.ubuntu}/commons-io.jar" />
 	</target>
 
 	<!-- ==================== Reload Target =================================== -->
@@ -441,7 +436,7 @@
   then start the web application. 
 
 -->
-	<target name="reload" depends="compile" description="Reload application on servlet container">
+	<target name="reload" depends="compile-war" description="Reload application on servlet container">
 		<reload url="${manager.url}" username="${manager.username}" password="${manager.password}" path="${app.path}" />
 	</target>
 
@@ -460,23 +455,19 @@
 
 	<target name="test" depends="dist" description="Tests the application">
 		<antcall target="install" />
-		<!-- Tests that pass if imprimatur test fail -->
+
 		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.01" output="${qa.home}/01/out.txt">
 			<arg value="${qa.home}/01/imprimatur.xml" />
 		</java>
-		<condition property="failTest01">
-			<equals arg1="${error.code.01}" arg2="0" />
-		</condition>
 
-		<fail if="failTest01" message="Failed test 01" />
+		<loadfile property="test01.out" srcFile="${qa.home}/01/out.txt">
+			<filterchain>
+				<containsregex pattern="Failed regexp check: 'sportive bombination'\." />
+			</filterchain>
+		</loadfile>
 
-		<!--
-   <exec failonerror="true" executable="grep">
-      <arg value="Failed regexp check" />
+		<fail unless="test01.out" message="Failed test 01" />
 
-      <arg value="${qa.home}/01/out.txt" />
-    </exec>
- -->
 		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.02">
 			<arg value="${qa.home}/02/imprimatur.xml" />
 		</java>
@@ -497,33 +488,17 @@
 
 		<fail if="failTest03" message="Failed test 03" />
 
-		<!-- Test the examples -->
-		<!--
-  	<property name="dist.tests" value="${dist.home}/tests" />
-    <java jar="${dist.home}/imprimatur.jar" fork="true"
-     resultproperty="error.code.example.01"
-     >
-       <arg value="${dist.tests}/google.xml" />
-     </java>
+		<java jar="${dist.home}/imprimatur.jar" fork="true" resultproperty="error.code.01" output="${qa.home}/04/out.txt">
+			<arg value="${qa.home}/04/imprimatur.xml" />
+		</java>
 
-     <condition property="failTest.example.01">
-       <equals arg1="${error.code.example.01}" arg2="1" />
-     </condition>
+		<loadfile property="test04.out" srcFile="${qa.home}/04/out.txt">
+			<filterchain>
+				<containsregex pattern="In the test script, the system id should be: http://imprimatur\.sourceforge\.net/imprimatur-009\.dtd rather than http://imprimatur\.sourceforge\.net/imprimatur-008\.dtd" />
+			</filterchain>
+		</loadfile>
 
-     <fail if="failTest.example.01" message="Example 01 doesn't work." />  	
-  	
-    <java jar="${dist.home}/imprimatur.jar" fork="true"
-     resultproperty="error.code.example.02"
-     >
-       <arg value="${dist.tests}/multi.xml" />
-     </java>
-
-     <condition property="failTest.example.02">
-       <equals arg1="${error.code.example.02}" arg2="1" />
-     </condition>
-
-     <fail if="failTest.example.02" message="Example 02 doesn't work." />  	
-     -->
+		<fail unless="test04.out" message="Failed test 04" />
 	</target>
 
 	<target name="prepare-app">
@@ -545,10 +520,11 @@
 
 		<mkdir dir="${classes.dir}" />
 
-		<copy todir="${lib.dir}">
-			<fileset dir="${javalib.home}/httpcomponents-client-4.1.1/lib" />
-		</copy>
-
+		<copy todir="${lib.dir}" file="${javalib.ubuntu}/httpclient.jar" />
+		<copy todir="${lib.dir}" file="${javalib.ubuntu}/httpcore.jar" />
+		<copy todir="${lib.dir}" file="${javalib.ubuntu}/httpmime.jar" />
+		<copy todir="${lib.dir}" file="${javalib.ubuntu}/commons-logging.jar" />
+		<copy todir="${lib.dir}" file="${javalib.ubuntu}/commons-codec.jar" />
 		<mkdir dir="${classes.dir}" />
 	</target>
 

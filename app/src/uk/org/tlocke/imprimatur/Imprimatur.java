@@ -116,7 +116,8 @@ public class Imprimatur extends Common {
 										+ VERSION + ".dtd"));
 				return inputSource;
 			} else {
-				return null;
+				throw new SAXException("In the test script, the system id should be: " + "http://imprimatur.sourceforge.net/imprimatur-"
+						+ VERSION + ".dtd rather than " + systemId);
 			}
 		}
 	}

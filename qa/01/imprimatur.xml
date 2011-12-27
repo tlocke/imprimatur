@@ -8,7 +8,6 @@
 	<test name="single regex failure">
 		<request path="/imprimatur/test_01.html">
 			<response-code value="200" />
-
 			<regex pattern="sportive bombination" />
 		</request>
 	</test>
