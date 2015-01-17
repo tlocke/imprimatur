@@ -1,6 +1,6 @@
-bin
-build
-dist
-imprimatur.zip
-lib
-imprimatur.jar
+.tox
+__pycache__
+flask.log
+flask.pid
+MANIFEST
+imprimatur.egg-info

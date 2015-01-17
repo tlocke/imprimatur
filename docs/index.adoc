@@ -1,0 +1,116 @@
+= Imprimatur
+
+Imprimatur is a tool for performing automated functional testing on web
+applications. The tests are described in a simple test script. Along with the
+standard HTTP methods, Imprimatur handles authentication, file uploads and
+HTTPS. The responses are validated using regular expressions.
+
+
+== Installation
+
+It's a good idea to set up a virtualenv:
+
+ virtualenv venv --python=python3
+ . venv/bin/activate
+
+then install Imprimatur with pip:
+
+ pip install imprimatur
+
+
+== Quickstart
+
+To run an example test script save the following as a file called `test.py`:
+
+ [
+   {
+     'host': 'www.google.com',
+     'response_code': 200}] 
+
+then run it with:
+
+ imprimatur test.py
+
+and it should come saying all tests are passed. The full list of properties for
+each request is given below. A * after the property name means that it is
+carried over to subsequent requests.
+
+|===
+| Name          | Notes
+
+| name
+| Used to label the request.
+
+| scheme*
+| Can be `'http'` (default) or `'https'`.
+
+| host*
+| Default is `'localhost'`.
+
+| port*
+| Default is 80.
+
+| auth*
+| Sequence of username and password eg. `('conrad', 'kurtz')`
+
+| path
+| End of the URL eg. `'/retrieve?product_id=45'`. Default is `'/'`.
+
+| method
+| An HTTP method. eg. `'post'`. Default is `'get'`.
+
+| data
+| Dictionary of post values eg. `{'id': 45, 'name': 'agnez'}`
+
+| files
+| File name and path to upload. Eg. `{'yellow': 'crome.txt'}`
+
+| tries
+| Number of times to try the URL. Default `{'number': 1, 'period': 1}`.
+
+| regexes
+| Sequence of regular expressions eg. `[r'goths', r'vandals']`
+
+| response_code
+| HTTP response code to check for, eg. `200`
+|===
+
+
+== Release Notes
+
+=== Version 0.23.0, 2015-01-17
+
+- Ported to Python.
+- Moved to GitHub.
+- Has the same features as before, but the script format is no longer an XML
+  file, but evaluatable Python.
+- Can be used as a Python library.
+
+
+=== Version 22
+
+- Removed <session> element.
+
+
+=== Version 20
+
+- Added support for HTTP HEAD requests.
+
+
+=== Version 18
+
+- Gets don't follow redirects by default.
+- Fixed example given in tests directory.
+- If no arguments are given on the command line, throws an exception saying no
+  file specified.
+
+
+=== Version 17
+
+- Can now set a request to follow redirects.
+
+
+=== Version 15
+
+- Changed so that a regex matches if it's found anywhere within the string.
+- In regexes, a dot character now matches line terminators as well.

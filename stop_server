@@ -1,0 +1,4 @@
+if [ -f flask.pid ]
+  then
+    kill $(< flask.pid)
+fi

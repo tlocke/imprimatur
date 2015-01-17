@@ -1,0 +1,11 @@
+. venv/bin/activate
+python application.py > flask.log 2>&1 &
+echo $! > flask.pid
+
+until curl --silent http://localhost:5000/ > /dev/null
+do
+  echo "Waiting for server to start up..."
+  sleep 1
+done
+
+

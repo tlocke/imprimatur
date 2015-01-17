@@ -1,0 +1,89 @@
+#!/bin/bash
+
+./stop_server
+./start_server
+. venv/bin/activate
+
+TEST_1="$(imprimatur tests/1/test_1.py)"
+
+TEST_1_DES="Name: single regex failure
+Request: http://localhost:5000/text_1
+The regular expression 'sportive bombination' fails.
+('Content-Length', '32')
+('Content-Type', 'text/html; charset=utf-8')
+('Date', 'Sat, 17 Jan 2015 13:30:54 GMT')
+('Server', 'Werkzeug/0.9.6 Python/3.4.0')
+
+The best of all possible worlds."
+
+if [[ "$TEST_1" != "$TEST_1_DES" ]]
+  then
+    echo -e "Test 1 failed.\n$TEST_1" 
+    exit
+fi
+
+if imprimatur tests/1/test_1.py > /dev/null
+  then
+    echo "Test 1 should fail, but it returned success."
+    exit
+fi
+echo "Passed Test 1"
+
+TEST_2="$(imprimatur tests/2/test_2.py)"
+TEST_2_DES="Name: single regex success
+Request: http://localhost:5000/text_2
+Name: Auth success
+Request: http://localhost:5000/auth
+Name: Relative file upload success
+Request: http://localhost:5000/echo
+Name: Post name and value with regex. Success.
+Request: http://localhost:5000/echo
+Name: Reset tries. Success.
+Request: http://localhost:5000/counter_reset
+Name: Tries. Success.
+Request: http://localhost:5000/counter
+Name: Regex on header. Success
+Request: http://localhost:5000/redirect?location=http://localhost:5000/here.html
+Name: HTTP HEAD request. Success
+Request: http://localhost:5000/text_1
+Passed all tests!"
+
+if [[ "$TEST_2" != "$TEST_2_DES" ]]
+  then
+    echo -e "Test 2 failed.\n$TEST_2" 
+    exit
+fi
+
+if ! imprimatur tests/2/test_2.py > /dev/null
+  then
+    echo "Test 2 should return success, but it returned fail."
+    exit
+fi
+echo "Passed Test 2"
+
+TEST_3="$(imprimatur tests/3/test_3.py)"
+
+TEST_3_DES="Name: Auth failure
+Request: http://localhost:5000/auth
+The regular expression 'sportive bombination' fails.
+('Content-Length', '14')
+('Content-Type', 'text/html; charset=utf-8')
+('Date', 'Sat, 17 Jan 2015 13:30:54 GMT')
+('Server', 'Werkzeug/0.9.6 Python/3.4.0')
+
+not authorized"
+
+if [[ "$TEST_3" != "$TEST_3_DES" ]]
+  then
+    echo -e "Test 3 failed.\n$TEST_3" 
+    exit
+fi
+
+if imprimatur tests/3/test_3.py > /dev/null
+  then
+    echo "Test 3 should fail, but it returned success."
+    exit
+fi
+echo "Passed Test 3"
+
+echo "Passed All!!"
