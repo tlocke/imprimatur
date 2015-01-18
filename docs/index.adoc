@@ -78,6 +78,11 @@ carried over to subsequent requests.
 
 == Release Notes
 
+=== Version 0.23.1, 2015-01-18
+
+- Added `imprimatur` as a command-line script that is automatically installed.
+
+
 === Version 0.23.0, 2015-01-17
 
 - Ported to Python.
