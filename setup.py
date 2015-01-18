@@ -53,4 +53,5 @@ setup(
     ],
     keywords="testing web",
     packages=("imprimatur",),
+    entry_points={'console_scripts': ['imprimatur = imprimatur.console:main']}
 )

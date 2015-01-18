@@ -4,3 +4,5 @@ flask.log
 flask.pid
 MANIFEST
 imprimatur.egg-info
+build
+dist
