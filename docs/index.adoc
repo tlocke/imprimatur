@@ -78,6 +78,12 @@ carried over to subsequent requests.
 
 == Release Notes
 
+=== Version 0.23.2, 2015-01-18
+
+- Added make sure dependencies ('`flask`' and '`requests`') are automatically
+  installed.
+
+
 === Version 0.23.1, 2015-01-18
 
 - Added `imprimatur` as a command-line script that is automatically installed.
