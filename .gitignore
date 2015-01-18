@@ -7,3 +7,4 @@ imprimatur.egg-info
 build
 dist
 *.pyc
+docs/index.html
