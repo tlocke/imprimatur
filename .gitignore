@@ -6,3 +6,4 @@ MANIFEST
 imprimatur.egg-info
 build
 dist
+*.pyc
