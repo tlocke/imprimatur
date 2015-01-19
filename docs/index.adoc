@@ -4,6 +4,11 @@ Imprimatur is a tool for performing automated functional testing on web
 applications. The tests are described in a simple test script. Along with the
 standard HTTP methods, Imprimatur handles authentication, file uploads and
 HTTPS. The responses are validated using regular expressions.
+ 
+Imprimatur runs on Python 2.6, 2.7, 3.3 and 3.4 on both CPython and PyPy.
+
+See the https://github.com/tlocke/imprimatur[GitHub repository] for code, bugs,
+feature requests etc.
 
 
 == Installation
@@ -77,6 +82,12 @@ carried over to subsequent requests.
 
 
 == Release Notes
+
+
+=== Version 0.23.3, 2015-01-19
+
+- Fixed various problems with Python 3. 
+
 
 === Version 0.23.2, 2015-01-18
 
