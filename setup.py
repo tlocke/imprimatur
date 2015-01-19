@@ -53,6 +53,6 @@ setup(
     ],
     keywords="testing web",
     packages=("imprimatur",),
-    install_requires=['requests', 'flask'],
+    install_requires=['requests', 'flask', 'argparse', 'six'],
     entry_points={'console_scripts': ['imprimatur = imprimatur.console:main']}
 )

@@ -1,14 +1,9 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, make_response
 import sys
 import traceback
+from six import text_type
 
 app = Flask(__name__)
-
-
-@app.after_request
-def set_fixed_date(response):
-    response.headers['Date'] = 'Sat, 17 Jan 2015 13:30:54 GMT'
-    return response
 
 
 @app.route('/')
@@ -18,7 +13,12 @@ def hello_world():
 
 @app.route('/text_1')
 def test_1():
-    return 'The best of all possible worlds.'
+    response = make_response('The best of all possible worlds.')
+    response.headers['content-length'] = '32'
+    response.headers['content-type'] = 'text; charset=utf-8'
+    response.headers['date'] = 'Sat, 17 Jan 2015 13:30:54 GMT'
+    response.headers['server'] = 'Werkzeug/0.9.6 Python/3.4.0'
+    return response
 
 
 @app.route('/text_2')
@@ -32,7 +32,7 @@ def echo():
     fls = list(request.files.items())
     if len(fls) > 0:
         fname, fval = fls[0]
-        ret.append(fname + ": " + str(fval.stream.read(), 'utf8') + '\n')
+        ret.append(fname + ": " + text_type(fval.stream.read(), 'utf8') + '\n')
     ret.append(str(request.form) + '\n')
     return ''.join(ret)
 
@@ -48,9 +48,14 @@ def auth():
     auth = request.authorization
     if auth is not None and auth.username == 'conrad' and \
             auth.password == 'kurtz':
-        return 'authorized'
+        response = make_response('authorized')
     else:
-        return 'not authorized', 403
+        response = make_response('not authorized', 403)
+    response.headers['content-length'] = '14'
+    response.headers['content-type'] = 'text; charset=utf-8'
+    response.headers['date'] = 'Sat, 17 Jan 2015 13:30:54 GMT'
+    response.headers['server'] = 'Werkzeug/0.9.6 Python/3.4.0'
+    return response
 
 count = 0
 

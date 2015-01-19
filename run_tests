@@ -9,10 +9,10 @@ TEST_1="$(imprimatur tests/1/test_1.py)"
 TEST_1_DES="Name: single regex failure
 Request: http://localhost:5000/text_1
 The regular expression 'sportive bombination' fails.
-('Content-Length', '32')
-('Content-Type', 'text/html; charset=utf-8')
-('Date', 'Sat, 17 Jan 2015 13:30:54 GMT')
-('Server', 'Werkzeug/0.9.6 Python/3.4.0')
+('content-length', '32')
+('content-type', 'text; charset=utf-8')
+('date', 'Sat, 17 Jan 2015 13:30:54 GMT')
+('server', 'Werkzeug/0.9.6 Python/3.4.0')
 
 The best of all possible worlds."
 
@@ -66,10 +66,10 @@ TEST_3="$(imprimatur tests/3/test_3.py)"
 TEST_3_DES="Name: Auth failure
 Request: http://localhost:5000/auth
 The regular expression 'sportive bombination' fails.
-('Content-Length', '14')
-('Content-Type', 'text/html; charset=utf-8')
-('Date', 'Sat, 17 Jan 2015 13:30:54 GMT')
-('Server', 'Werkzeug/0.9.6 Python/3.4.0')
+('content-length', '14')
+('content-type', 'text; charset=utf-8')
+('date', 'Sat, 17 Jan 2015 13:30:54 GMT')
+('server', 'Werkzeug/0.9.6 Python/3.4.0')
 
 not authorized"
 

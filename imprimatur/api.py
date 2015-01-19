@@ -1,6 +1,7 @@
 import requests
 import re
 import time
+from six import text_type
 
 
 def response_str(response):
@@ -9,7 +10,7 @@ def response_str(response):
     for k in sorted(headers.keys()):
         res.append(str((k, headers[k])) + '\n')
     res.append('\n')
-    res.append(str(response.content, response.apparent_encoding))
+    res.append(text_type(response.content, response.apparent_encoding))
     return ''.join(res)
 
 
@@ -85,7 +86,7 @@ def run(script_str):
         if 'regexes' in req:
             for pattern in req['regexes']:
                 if re.search(
-                        pattern, str(r.content, r.apparent_encoding),
+                        pattern, text_type(r.content, r.apparent_encoding),
                         flags=re.MULTILINE) is None:
                     failed = True
                     yield "The regular expression '" + pattern + \
