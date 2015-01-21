@@ -67,8 +67,10 @@ some more examples:
          'status_code': 200,
          'regexes': ["Leisure"]},
      {
-         'name': "Tries.",
+         'name': "Repeat until successful.",
          'path': "/counter",
+         # 'number' is the number of times to try
+         # 'period' is the number of seconds to wait between tries
          'tries': {'number': 3, 'period': 1},
          'status_code': 200,
          'regexes': ["The Decline And Fall Of The Roman Empire"]},
@@ -118,7 +120,9 @@ carried over to subsequent requests.
 | File name and path to upload. Eg. `{'yellow': 'crome.txt'}`
 
 | tries
-| Number of times to try the URL. Default `{'number': 1, 'period': 1}`.
+| Number of times to try the URL. Default `{'number': 1, 'period': 1}`. The
+`number` value is the number of times to try, and the `period` is the number of
+seconds to wait between tries.
 
 | regexes
 | Sequence of regular expressions eg. `[r'goths', r'vandals']`
