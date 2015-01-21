@@ -36,15 +36,59 @@ then run it with:
 
  imprimatur test.py
 
-and it should come saying all tests are passed. The full list of properties for
+and it should come back saying all tests are passed. Here's another script with
+some more examples:
+
+ [
+     {
+         'name': "Single regex",
+         'port': 5000,
+         'host': "localhost",
+         'path': "/text_2",
+         'status_code': 200,
+         'regexes': ['inexhaustible']},
+     {
+         'name': "Basic auth",
+         'path': "/auth",
+         'auth': ("conrad", "kurtz"),
+         'status_code': 200},
+     {
+         'name': "File upload",
+         'path': "/echo",
+         'method': "post",
+         'files': {"yellow": "tests/2/crome-file.txt"},
+         'regexes': ["yellow", "on the leads"],
+         'status_code': 200},
+     {
+         'name': "Post name and value with regex.",
+         'path': "/echo",
+         'method': "post",
+         'data': {"quote": "Leisure is the mother of philosophy."},
+         'status_code': 200,
+         'regexes': ["Leisure"]},
+     {
+         'name': "Tries.",
+         'path': "/counter",
+         'tries': {'number': 3, 'period': 1},
+         'status_code': 200,
+         'regexes': ["The Decline And Fall Of The Roman Empire"]},
+     {
+         'name': "Regex on header.",
+         'path': "/redirect?location=http://localhost:5000/here.html",
+         'status_code': 302,
+         'regexes': ["here.html"]},
+     {
+         'name': "HTTP HEAD request.",
+         'path': "/text_1",
+         'method': "head",
+         'status_code': 200}]
+
+The full list of properties for
 each request is given below. A * after the property name means that it is
 carried over to subsequent requests.
 
 |===
 | Name          | Notes
-
-| name
-| Used to label the request.
 
 | scheme*
 | Can be `'http'` (default) or `'https'`.
@@ -57,6 +101,9 @@ carried over to subsequent requests.
 
 | auth*
 | Sequence of username and password eg. `('conrad', 'kurtz')`
+
+| name
+| Used to label the request.
 
 | path
 | End of the URL eg. `'/retrieve?product_id=45'`. Default is `'/'`.
@@ -82,6 +129,18 @@ carried over to subsequent requests.
 
 
 == Release Notes
+
+
+=== Version 0.23.4, 2015-01-21
+
+- Imprimatur now requires version 2.5.1 of the '`requests`' library. It was
+  found that old versions of 'requests' didn't work.
+
+- Fixed a bug where the status code check isn't working.
+     
+- Added in a check for extraneous keys in the test script.
+ 
+- Included a lot more examples in the docs.
 
 
 === Version 0.23.3, 2015-01-19
