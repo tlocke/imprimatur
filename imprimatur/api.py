@@ -13,6 +13,10 @@ def response_str(response):
     res.append(text_type(response.content, response.apparent_encoding))
     return ''.join(res)
 
+KEYS = frozenset([
+    'host', 'name', 'port', 'scheme', 'regexes', 'status_code', 'auth', 'path',
+    'files', 'method', 'data', 'tries'])
+
 
 def run(script_str):
     reqs = eval(script_str)
@@ -20,6 +24,12 @@ def run(script_str):
         'host': 'localhost', 'port': 80, 'scheme': 'http'}
     failed = False
     for req in reqs:
+        unrec = set(req.keys()) - KEYS
+        if len(unrec) > 0:
+            failed = True
+            yield "The keys " + str(unrec) + " aren't recognized."
+            break
+
         for k in ('host', 'port', 'scheme'):
             try:
                 defreq[k] = req[k]
@@ -50,6 +60,11 @@ def run(script_str):
         except KeyError:
             data = None
 
+        try:
+            auth = req['auth']
+        except KeyError:
+            auth = None
+
         yield "Request: " + url + "\n"
 
         try:
@@ -72,7 +87,8 @@ def run(script_str):
                 time.sleep(period)
             try:
                 r = requests.request(
-                    method, url, files=files, data=data, allow_redirects=False)
+                    method, url, files=files, data=data, allow_redirects=False,
+                    auth=auth)
             except requests.exceptions.InvalidURL as e:
                 failed = True
                 yield "Invalid URL: " + str(e) + '\n'
@@ -80,7 +96,9 @@ def run(script_str):
 
         if 'status_code' in req and r.status_code != req['status_code']:
             failed = True
-            yield "The status code doesn't match.\n" + response_str(r)
+            yield "The desired status code " + str(req['status_code']) + \
+                " doesn't match the actual status code " + \
+                str(r.status_code) + ".\n" + response_str(r)
             break
 
         if 'regexes' in req:

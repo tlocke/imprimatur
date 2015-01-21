@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE imprimatur PUBLIC 
-    "-//Imprimatur DTD 009//EN"
-    "http://imprimatur.sourceforge.net/imprimatur-008.dtd">
-<imprimatur port="8080" hostname="localhost">
-	<!-- Test that it realizes that the system id has the wrong version number. -->
-</imprimatur>
-

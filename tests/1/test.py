@@ -1,8 +1,8 @@
 [
     {
         'port': 5000,
-        'hostname': 'localhost',
+        'host': 'localhost',
         'name': "single regex failure",
         'path': "/text_1",
-        'response_code': 200,
+        'status_code': 200,
         'regexes': [r"sportive bombination"]}]
