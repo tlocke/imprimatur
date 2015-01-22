@@ -36,6 +36,8 @@ Name: status code as string
 Request: http://localhost:5000/text_1
 Name: Auth success
 Request: http://localhost:5000/auth
+Name: Auth carried over success
+Request: http://localhost:5000/auth
 Name: Relative file upload success
 Request: http://localhost:5000/echo
 Name: Post name and value with regex. Success.

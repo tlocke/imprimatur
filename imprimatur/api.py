@@ -17,6 +17,8 @@ KEYS = frozenset([
     'host', 'name', 'port', 'scheme', 'regexes', 'status_code', 'auth', 'path',
     'files', 'method', 'data', 'tries'])
 
+CARRIED = frozenset(('host', 'port', 'scheme', 'auth'))
+
 
 def run(script_str):
     reqs = eval(script_str)
@@ -30,14 +32,16 @@ def run(script_str):
             yield "The keys " + str(unrec) + " aren't recognized."
             break
 
-        for k in ('host', 'port', 'scheme'):
-            try:
-                defreq[k] = req[k]
-            except KeyError:
-                pass
+        for k in CARRIED & set(req.keys()):
+            defreq[k] = req[k]
 
         url = defreq['scheme'] + '://' + defreq['host'] + ':' + \
             str(defreq['port']) + req['path']
+
+        try:
+            auth = defreq['auth']
+        except KeyError:
+            auth = None
 
         try:
             method = req['method']
@@ -59,11 +63,6 @@ def run(script_str):
             data = req['data']
         except KeyError:
             data = None
-
-        try:
-            auth = req['auth']
-        except KeyError:
-            auth = None
 
         yield "Request: " + url + "\n"
 

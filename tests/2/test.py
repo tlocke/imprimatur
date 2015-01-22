@@ -16,6 +16,10 @@
         'auth': ("conrad", "kurtz"),
         'status_code': 200},
     {
+        'name': "Auth carried over success",
+        'path': "/auth",
+        'status_code': 200},
+    {
         'name': "Relative file upload success",
         'path': "/echo",
         'method': "post",
