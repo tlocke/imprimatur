@@ -114,5 +114,5 @@ def run(script_str):
                     break
 
     if not failed:
-        yield "Passed all tests!"
+        yield "Passed all tests!\n"
         yield None
