@@ -94,12 +94,14 @@ def run(script_str):
                 yield "Invalid URL: " + str(e) + '\n'
                 break
 
-        if 'status_code' in req and r.status_code != req['status_code']:
-            failed = True
-            yield "The desired status code " + str(req['status_code']) + \
-                " doesn't match the actual status code " + \
-                str(r.status_code) + ".\n" + response_str(r)
-            break
+        if 'status_code' in req:
+            req_status_code = int(req['status_code'])
+            if r.status_code != req_status_code:
+                failed = True
+                yield "The desired status code " + str(req_status_code) + \
+                    " doesn't match the actual status code " + \
+                    str(r.status_code) + ".\n" + response_str(r)
+                break
 
         if 'regexes' in req:
             for pattern in req['regexes']:

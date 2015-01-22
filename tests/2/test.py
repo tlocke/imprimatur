@@ -7,6 +7,10 @@
         'status_code': 200,
         'regexes': ['inexhaustible']},
     {
+        'name': "status code as string",
+        'path': "/text_1",
+        'status_code': '200'},
+    {
         'name': "Auth success",
         'path': "/auth",
         'auth': ("conrad", "kurtz"),
