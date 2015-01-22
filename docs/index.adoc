@@ -135,6 +135,18 @@ seconds to wait between tries.
 == Release Notes
 
 
+=== Version 0.23.5, 2015-01-22
+
+- The `status_code` attribute is now allowed to be either a `str` or an `int`.
+  Previously it could only be an `int`.
+
+- The '`Passed all tests!`' message at the end is now followed by a newline
+  character.
+
+- The `auth` attribute is now carried over from previous requests so that it
+  doesn't have to be specified explicitly in each subsequent request.
+
+
 === Version 0.23.4, 2015-01-21
 
 - Imprimatur now requires version 2.5.1 of the '`requests`' library. It was
