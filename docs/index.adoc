@@ -11,6 +11,7 @@ See the https://github.com/tlocke/imprimatur[GitHub repository] for code, bugs,
 feature requests etc.
 
 
+
 == Installation
 
 It's a good idea to set up a virtualenv:
@@ -21,6 +22,21 @@ It's a good idea to set up a virtualenv:
 then install Imprimatur with pip:
 
  pip install imprimatur
+
+
+== Upgrading from Java version
+
+There's a converter available to convert the old style XML scripts to the new
+style Python ones. Edit your XML file to point to the converter XSL stylesheet,
+so the first two lines of the XML document look like:
+
+ <?xml version="1.0" encoding="UTF-8"?>
+ <?xml-stylesheet type="text/xsl" href="http://pythonhosted.org/imprimatur/convert.xsl" ?>
+
+Also, remove any `<test-group>` elements and make sure all `<request>` elements
+are within `<test>` elements. Then open the XML file in a browser and copy and
+paste the page into a new file. The `name` attribute of `<imprimatur>` won't be
+carried over into the new file.
 
 
 == Quickstart
