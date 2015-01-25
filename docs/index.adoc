@@ -11,7 +11,6 @@ See the https://github.com/tlocke/imprimatur[GitHub repository] for code, bugs,
 feature requests etc.
 
 
-
 == Installation
 
 It's a good idea to set up a virtualenv:
@@ -26,12 +25,13 @@ then install Imprimatur with pip:
 
 == Upgrading from Java version
 
-There's a converter available to convert the old style XML scripts to the new
-style Python ones. Edit your XML file to point to the converter XSL stylesheet,
-so the first two lines of the XML document look like:
+There's a converter in the form of an XSL stylesheet which will transform the
+old style XML scripts to the new style Python ones. http://pythonhosted.org/imprimatur/convert.xsl[Download] the stylesheet and save it in the same directory
+as the the XML file. Edit your XML file to point to the stylesheet, so the
+first two lines of the XML document look like:
 
  <?xml version="1.0" encoding="UTF-8"?>
- <?xml-stylesheet type="text/xsl" href="http://pythonhosted.org/imprimatur/convert.xsl" ?>
+ <?xml-stylesheet type="text/xsl" href="convert.xsl"?>
 
 Also, remove any `<test-group>` elements and make sure all `<request>` elements
 are within `<test>` elements. Then open the XML file in a browser and copy and
@@ -149,6 +149,12 @@ seconds to wait between tries.
 
 
 == Release Notes
+
+
+=== Version 0.23.7, 2015-01-25
+
+- Added a converter to convert from old style XML test scripts to new style
+  Python ones.
 
 
 === Version 0.23.5, 2015-01-22
