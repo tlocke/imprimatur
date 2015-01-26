@@ -151,6 +151,12 @@ seconds to wait between tries.
 == Release Notes
 
 
+=== Version 0.23.8, 2015-01-26
+
+- The converter from old style XML test scripts to new style ones now carries
+  over the comments as well.
+
+
 === Version 0.23.7, 2015-01-25
 
 - Added a converter to convert from old style XML test scripts to new style

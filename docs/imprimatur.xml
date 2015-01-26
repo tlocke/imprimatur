@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="convert.xsl" ?>
+<!DOCTYPE imprimatur PUBLIC 
+    "-//Imprimatur DTD 009//EN"
+    "http://imprimatur.sourceforge.net/imprimatur-009.dtd">
+<imprimatur port="8080" hostname="localhost">
+  <!-- Initial comment -->
+  <test name="single regex success">
+    <!-- Request test_01 -->
+    <request path="/imprimatur/test_01.html" method="get">
+      <!-- Check status code -->
+      <response-code value="200" />
+
+      <regex pattern="inexhaustible" />
+    </request>
+  </test>
+
+  <!-- Check credentials -->
+  <test name="credentials success">
+    <request path="/imprimatur/test_01_credentials.html" method="get">
+      <credentials username="conrad" password="kurtz" />
+      <refresh wait="1500" max="20" />  <!-- Wait in millis -->
+      <response-code value="200" />
+    </request>
+  </test>
+  <test name="relative file upload success">
+    <request path="/imprimatur/echo" method="post">
+      <control type="file" name="yellow" value="crome-file.txt" />
+      <refresh/>
+      <regex pattern="yellow" />
+      <regex pattern="on the leads" />
+      <response-code value="200" />
+    </request>
+  </test>
+  <test name="Post with control value as 'value' attribute.">
+		<request path="/imprimatur/echo" method="post">
+			<control name="quote" value="Leisure is the mother of philosophy." />
+			<response-code value="200" />
+
+			<regex pattern="Leisure" />
+		</request>
+	</test>
+	<test name="Put with entity file.">
+		<request path="/imprimatur/echo" method="put" body-file="body.txt">
+			<header name="Content-Type" value="text/plain" />
+
+			<response-code value="200" />
+			<regex pattern=".*text\/plain.*" />
+			<regex pattern=".*The price of freedom is eternal vigilance\..*" />
+		</request>
+	</test>
+	<test name="HTTP HEAD request">
+		<request path="/imprimatur/test_01.html" method="head">
+			<response-code value="200" />
+		</request>
+	</test>
+</imprimatur>
