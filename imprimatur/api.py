@@ -67,12 +67,12 @@ def run(script_str):
         try:
             tries = req['tries']
         except KeyError:
-            tries = {'number': 1, 'period': 1}
+            tries = {'max': 1, 'period': 1}
 
         try:
-            num_tries = tries['number']
+            max_tries = tries['max']
         except KeyError:
-            num_tries = 1
+            max_tries = 1
 
         try:
             period = tries['period']
@@ -82,7 +82,7 @@ def run(script_str):
         j = 0
         failed = True
         msg = None
-        while failed and j < num_tries:
+        while failed and j < max_tries:
             if j > 0:
                 time.sleep(period)
             j += 1

@@ -85,9 +85,9 @@ some more examples:
      {
          'name': "Repeat until successful.",
          'path': "/counter",
-         # 'number' is the number of times to try
+         # 'max' is maximum number of times to try
          # 'period' is the number of seconds to wait between tries
-         'tries': {'number': 3, 'period': 1},
+         'tries': {'max': 3, 'period': 1},
          'status_code': 200,
          'regexes': ["The Decline And Fall Of The Roman Empire"]},
      {
