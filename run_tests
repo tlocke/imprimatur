@@ -46,6 +46,8 @@ Name: Reset tries. Success.
 Request: http://localhost:5000/counter_reset
 Name: Tries. Success.
 Request: http://localhost:5000/counter
+Request: http://localhost:5000/counter
+Request: http://localhost:5000/counter
 Name: Regex on header. Success
 Request: http://localhost:5000/redirect?location=http://localhost:5000/here.html
 Name: HTTP HEAD request. Success

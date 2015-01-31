@@ -40,7 +40,7 @@
     {
         'name': "Tries. Success.",
         'path': "/counter",
-        'tries': {'number': 3, 'period': 1},
+        'tries': {'number': 4, 'period': 1},
         'status_code': 200,
         'regexes': ["The Decline And Fall Of The Roman Empire"]},
     {

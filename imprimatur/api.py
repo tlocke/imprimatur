@@ -64,8 +64,6 @@ def run(script_str):
         except KeyError:
             data = None
 
-        yield "Request: " + url + "\n"
-
         try:
             tries = req['tries']
         except KeyError:
@@ -81,36 +79,50 @@ def run(script_str):
         except KeyError:
             period = 1
 
-        for i in range(num_tries):
-            if i > 0:
+        j = 0
+        failed = True
+        msg = None
+        while failed and j < num_tries:
+            if j > 0:
                 time.sleep(period)
+            j += 1
             try:
+                yield "Request: " + url + "\n"
                 r = requests.request(
                     method, url, files=files, data=data, allow_redirects=False,
                     auth=auth)
             except requests.exceptions.InvalidURL as e:
-                failed = True
                 yield "Invalid URL: " + str(e) + '\n'
                 break
 
-        if 'status_code' in req:
-            req_status_code = int(req['status_code'])
-            if r.status_code != req_status_code:
-                failed = True
-                yield "The desired status code " + str(req_status_code) + \
-                    " doesn't match the actual status code " + \
-                    str(r.status_code) + ".\n" + response_str(r)
-                break
+            if 'status_code' in req:
+                req_status_code = int(req['status_code'])
+                if r.status_code != req_status_code:
+                    msg = "The desired status code " + str(req_status_code) + \
+                        " doesn't match the actual status code " + \
+                        str(r.status_code) + ".\n" + response_str(r)
+                    continue
 
-        if 'regexes' in req:
-            for pattern in req['regexes']:
-                if re.search(
-                        pattern, text_type(r.content, r.apparent_encoding),
-                        flags=re.MULTILINE) is None:
-                    failed = True
-                    yield "The regular expression '" + pattern + \
+            if 'regexes' in req:
+                regex_failed = False
+                k = 0
+                while not regex_failed and k < len(req['regexes']):
+                    pattern = req['regexes'][k]
+                    k += 1
+                    if re.search(
+                            pattern, text_type(r.content, r.apparent_encoding),
+                            flags=re.MULTILINE) is None:
+                        regex_failed = True
+                if regex_failed:
+                    msg = "The regular expression '" + pattern + \
                         "' fails.\n" + response_str(r)
-                    break
+                    continue
+
+            failed = False
+
+        if failed:
+            yield msg
+            break
 
     if not failed:
         yield "Passed all tests!\n"
