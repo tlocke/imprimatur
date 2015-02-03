@@ -1,4 +1,7 @@
 = Imprimatur
+:toc:
+:toclevels: 1
+
 
 Imprimatur is a tool for performing automated functional testing on web
 applications. The tests are described in a simple test script. Along with the
@@ -136,9 +139,9 @@ carried over to subsequent requests.
 | File name and path to upload. Eg. `{'yellow': 'crome.txt'}`
 
 | tries
-| Number of times to try the URL. Default `{'number': 1, 'period': 1}`. The
-`number` value is the number of times to try, and the `period` is the number of
-seconds to wait between tries.
+| Maximum number of times to try the URL. Default `{'max': 1, 'period': 1}`.
+  The `max` value is the number of times to try, and the `period` is the number
+  of seconds to wait between tries.
 
 | regexes
 | Sequence of regular expressions eg. `[r'goths', r'vandals']`

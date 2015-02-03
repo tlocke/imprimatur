@@ -1,47 +1,74 @@
 from flask import Flask, request, redirect, make_response, render_template
 import sys
-import traceback
 from six import text_type
 import threading
 import imprimatur
+import traceback
 
 app = Flask(__name__)
 
 procs = {}
 
-lock = threading.Lock
+proc_lock = threading.Lock()
 
 
-class ProcThread(threading.Thread):
+class RunThread(threading.Thread):
     def __init__(self, script, **kwargs):
         threading.Thread.__init__(self, **kwargs)
         self.script = script
         self.results = []
+        self.results_lock = threading.Lock()
 
     def run(self):
-        for txt in imprimatur.run(self.script):
-            try:
-                lock.acquire()
-                self.results.append(txt)
-            finally:
-                lock.release()
+        sys.stderr.write("running thread\n")
+        try:
+            for txt in imprimatur.run(self.script):
+                sys.stderr.write("txt is " + str(txt) + "\n")
+                with self.results_lock:
+                    self.results.append(txt)
+                sys.stderr.write("finished txt\n")
+
+        except:
+            sys.stderr.write("An error:\n")
+            sys.stderr.write(traceback.format_exc())
+        sys.stderr.write("finished running thread\n")
+
+    def results_str(self):
+        with self.results_lock:
+            if self.results[-1] is None:
+                txts = self.results[:-1]
+            else:
+                txts = self.results[:]
+        return ''.join(txts)
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello_world():
+def home():
     if request.method == 'GET':
         return render_template('home.html')
     else:
+        sys.stderr.write("doing post\n")
         fl = request.files['file']
         script = text_type(fl.stream.read(), 'utf8')
-        proc = ProcThread(script)
-        lock.acquire()
-        proc_id = len(procs)
-        procs[proc_id] = proc
-        lock.release
-        proc.start()
+        sys.stderr.write("got script\n")
+        proc = RunThread(script)
+        sys.stderr.write("created thread\n")
+        with proc_lock:
+            sys.stderr.write("got lock\n")
+            proc_id = len(procs)
+            procs[proc_id] = proc
+            proc.start()
+        sys.stderr.write("redirected\n")
+        return redirect('/runs/' + str(proc_id))
 
-        return render_template('home.html', script=script)
+
+@app.route('/runs/<int:run_id>')
+def runs(run_id):
+    sys.stderr.write("doingsruns\n")
+    with proc_lock:
+        sys.stderr.write("acquired lock\n")
+        proc = procs[run_id]
+    return render_template('run.html', proc=proc)
 
 
 @app.route('/text_1')
@@ -117,4 +144,4 @@ def page_not_found(e):
     return error, 500
 
 if __name__ == '__main__':
-        app.run()
+        app.run(debug=True)
