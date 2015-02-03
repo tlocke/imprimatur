@@ -110,8 +110,8 @@ def run(script_str):
                     pattern = req['regexes'][k]
                     k += 1
                     if re.search(
-                            pattern, text_type(r.content, r.apparent_encoding),
-                            flags=re.MULTILINE) is None:
+                            pattern, response_str(r),
+                            flags=re.MULTILINE | re.DOTALL) is None:
                         regex_failed = True
                 if regex_failed:
                     msg = "The regular expression '" + pattern + \

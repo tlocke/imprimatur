@@ -1,4 +1,4 @@
-python application.py > flask.log 2>&1 &
+python imprimatur/web.py > flask.log 2>&1 &
 echo $! > flask.pid
 
 until curl --silent http://localhost:5000/ > /dev/null

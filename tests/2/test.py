@@ -47,7 +47,10 @@
         'name': "Regex on header. Success",
         'path': "/redirect?location=http://localhost:5000/here.html",
         'status_code': 302,
-        'regexes': ["here.html"]},
+        'regexes': [
+            "('location', 'http://localhost:5000/here.html')",
+            # . means all characters, even line breaks
+            "content-type.*location"]},
     {
         'name': "HTTP HEAD request. Success",
         'path': "/text_1",

@@ -1,14 +1,47 @@
-from flask import Flask, request, redirect, make_response
+from flask import Flask, request, redirect, make_response, render_template
 import sys
 import traceback
 from six import text_type
+import threading
+import imprimatur
 
 app = Flask(__name__)
 
+procs = {}
 
-@app.route('/')
+lock = threading.Lock
+
+
+class ProcThread(threading.Thread):
+    def __init__(self, script, **kwargs):
+        threading.Thread.__init__(self, **kwargs)
+        self.script = script
+        self.results = []
+
+    def run(self):
+        for txt in imprimatur.run(self.script):
+            try:
+                lock.acquire()
+                self.results.append(txt)
+            finally:
+                lock.release()
+
+
+@app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    return 'Hello World!'
+    if request.method == 'GET':
+        return render_template('home.html')
+    else:
+        fl = request.files['file']
+        script = text_type(fl.stream.read(), 'utf8')
+        proc = ProcThread(script)
+        lock.acquire()
+        proc_id = len(procs)
+        procs[proc_id] = proc
+        lock.release
+        proc.start()
+
+        return render_template('home.html', script=script)
 
 
 @app.route('/text_1')
