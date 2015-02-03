@@ -154,6 +154,16 @@ carried over to subsequent requests.
 == Release Notes
 
 
+=== Version 0.23.10, 2015-02-03
+
+- Fixed bug where regex pattern wasn't searching the headers.
+
+- Added the re.DOTALL flag so that a `.` in regular expressions matches line
+  ending characters.
+
+- Added a rudimentary web interface.
+
+
 === Version 0.23.9, 2015-01-31
 
 - Various improvements to the converter from old style XML test scripts to new
