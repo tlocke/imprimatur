@@ -18,7 +18,7 @@ feature requests etc.
 
 It's a good idea to set up a virtualenv:
 
- virtualenv venv --python=python3
+ virtualenv venv
  . venv/bin/activate
 
 then install Imprimatur with pip:
@@ -104,9 +104,11 @@ some more examples:
          'method': "head",
          'status_code': 200}]
 
-The full list of properties for
-each request is given below. A * after the property name means that it is
-carried over to subsequent requests.
+
+== Reference
+
+The full list of properties for each request is given below. A * after the
+property name means that it is carried over to subsequent requests.
 
 |===
 | Name          | Notes
@@ -139,15 +141,19 @@ carried over to subsequent requests.
 | File name and path to upload. Eg. `{'yellow': 'crome.txt'}`
 
 | tries
-| Maximum number of times to try the URL. Default `{'max': 1, 'period': 1}`.
-  The `max` value is the number of times to try, and the `period` is the number
-  of seconds to wait between tries.
+| Maximum number of times to try the URL. Eg. `{'max': 5, 'period': 2}`. The
+  `max` value is the number of times to try, and the `period` is the number of
+  seconds to wait between tries. If `max` is omitted it defaults to `10` and if
+  `period` is omitted it defaults to `1`, so `{}` is equivalent to
+  `{'max': 10, 'period': 1}`.
 
 | regexes
-| Sequence of regular expressions eg. `[r'goths', r'vandals']`
+| Sequence of https://docs.python.org/3.4/howto/regex.html[regular expressions]
+  eg. `[r'go\s*ths', r'vandals']`
 
 | status_code
-| HTTP status code to check for, eg. `200`
+| https://tools.ietf.org/html/rfc7231#section-6[HTTP status code] to
+  check for, eg. `200`
 |===
 
 

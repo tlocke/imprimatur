@@ -72,7 +72,7 @@ def run(script_str):
         try:
             max_tries = tries['max']
         except KeyError:
-            max_tries = 1
+            max_tries = 10
 
         try:
             period = tries['period']

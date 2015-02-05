@@ -48,9 +48,9 @@
         'path': "/redirect?location=http://localhost:5000/here.html",
         'status_code': 302,
         'regexes': [
-            "('location', 'http://localhost:5000/here.html')",
+            "('[Ll]ocation', 'http://localhost:5000/here.html')",
             # . means all characters, even line breaks
-            "content-type.*location"]},
+            "[Cc]ontent-[Tt]ype.*[Ll]ocation"]},
     {
         'name': "HTTP HEAD request. Success",
         'path': "/text_1",
