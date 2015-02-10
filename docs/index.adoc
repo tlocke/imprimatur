@@ -157,6 +157,17 @@ property name means that it is carried over to subsequent requests.
 |===
 
 
+== Web Interface
+
+Imprimatur comes with a very basic web interface. You can try it out using
+Imprimatur's built-in web server by doing:
+
+ python -m imprimatur.web
+
+Don't run it on a public facing production web server, as it is entirely
+unsecure.
+
+
 == Release Notes
 
 

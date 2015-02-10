@@ -1,3 +1,4 @@
 include readme.adoc
 include versioneer.py
 include imprimatur/_version.py
+include imprimatur/templates/*.html
