@@ -43,7 +43,9 @@ class RunThread(threading.Thread):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'GET':
-        return render_template('home.html')
+        with proc_lock:
+            runs = procs.keys()
+        return render_template('home.html', runs=runs)
     else:
         fl = request.files['file']
         script = text_type(fl.stream.read(), 'utf8')
@@ -59,7 +61,7 @@ def home():
 def runs(run_id):
     with proc_lock:
         proc = procs[run_id]
-    return render_template('run.html', proc=proc)
+    return render_template('run.html', proc=proc, run_id=run_id)
 
 
 @app.route('/text_1')

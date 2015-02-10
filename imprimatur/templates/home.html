@@ -14,6 +14,18 @@
     </fieldset>
   </form>
 
+
+  <h2>Runs</h2>
+
+  <ul>
+    {% for run in runs %}
+      <li><a href="/runs/{{run}}">{{run}}</a></li>
+    {% endfor %}
+  </ul>
+
+
+  <h2>Tutorial</h2>
+
   <p>
     To run an example test script save the following as a file:
   </p>
