@@ -2,6 +2,7 @@ import requests
 import re
 import time
 from six import text_type
+import traceback
 
 
 def response_str(response):
@@ -21,7 +22,12 @@ CARRIED = frozenset(('host', 'port', 'scheme', 'auth'))
 
 
 def run(script_str):
-    reqs = eval(script_str)
+    try:
+        reqs = eval(script_str)
+    except SyntaxError:
+        yield "Problem with script: " + traceback.format_exc()
+        return
+
     defreq = {
         'host': 'localhost', 'port': 80, 'scheme': 'http'}
     failed = False

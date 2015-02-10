@@ -55,4 +55,10 @@
         'name': "HTTP HEAD request. Success",
         'path': "/text_1",
         'method': "head",
-        'status_code': 200}]
+        'status_code': 200},
+    {
+        'name': "Upload script with syntax errors",
+        'path': "/",
+        'method': 'post',
+        'files': {"file": "tests/2/syntax_error.py"},
+        'status_code': 303}]

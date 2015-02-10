@@ -20,22 +20,20 @@ class RunThread(threading.Thread):
         self.results_lock = threading.Lock()
 
     def run(self):
-        sys.stderr.write("running thread\n")
         try:
             for txt in imprimatur.run(self.script):
-                sys.stderr.write("txt is " + str(txt) + "\n")
                 with self.results_lock:
                     self.results.append(txt)
-                sys.stderr.write("finished txt\n")
 
         except:
             sys.stderr.write("An error:\n")
             sys.stderr.write(traceback.format_exc())
-        sys.stderr.write("finished running thread\n")
 
     def results_str(self):
         with self.results_lock:
-            if self.results[-1] is None:
+            if len(self.results) == 0:
+                return "Hasn't started yet..."
+            elif self.results[-1] is None:
                 txts = self.results[:-1]
             else:
                 txts = self.results[:]
@@ -47,26 +45,19 @@ def home():
     if request.method == 'GET':
         return render_template('home.html')
     else:
-        sys.stderr.write("doing post\n")
         fl = request.files['file']
         script = text_type(fl.stream.read(), 'utf8')
-        sys.stderr.write("got script\n")
         proc = RunThread(script)
-        sys.stderr.write("created thread\n")
         with proc_lock:
-            sys.stderr.write("got lock\n")
             proc_id = len(procs)
             procs[proc_id] = proc
             proc.start()
-        sys.stderr.write("redirected\n")
-        return redirect('/runs/' + str(proc_id))
+        return redirect('/runs/' + str(proc_id), 303)
 
 
 @app.route('/runs/<int:run_id>')
 def runs(run_id):
-    sys.stderr.write("doingsruns\n")
     with proc_lock:
-        sys.stderr.write("acquired lock\n")
         proc = procs[run_id]
     return render_template('run.html', proc=proc)
 
