@@ -120,10 +120,14 @@ property name means that it is carried over to subsequent requests.
 | Default is `'localhost'`.
 
 | port*
-| Default is 80.
+| Default is `80`.
 
 | auth*
 | Sequence of username and password eg. `('conrad', 'kurtz')`
+
+| verify*
+| For an HTTPS request, verify the certificate. Can be `True` or `False`
+  (default).
 
 | name
 | Used to label the request.

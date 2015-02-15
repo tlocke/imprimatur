@@ -14,11 +14,15 @@ def response_str(response):
     res.append(text_type(response.content, response.apparent_encoding))
     return ''.join(res)
 
-KEYS = frozenset([
-    'host', 'name', 'port', 'scheme', 'regexes', 'status_code', 'auth', 'path',
-    'files', 'method', 'data', 'tries'])
 
-CARRIED = frozenset(('host', 'port', 'scheme', 'auth'))
+CARRIED = frozenset(('host', 'port', 'scheme', 'auth', 'verify'))
+
+NOT_CARRIED = frozenset(
+    [
+        'name', 'regexes', 'status_code', 'path', 'files', 'method', 'data',
+        'tries'])
+
+KEYS = frozenset(CARRIED | NOT_CARRIED)
 
 
 def run(script_str):
@@ -29,7 +33,7 @@ def run(script_str):
         return
 
     defreq = {
-        'host': 'localhost', 'port': 80, 'scheme': 'http'}
+        'host': 'localhost', 'port': 80, 'scheme': 'http', 'verify': False}
     failed = False
     for req in reqs:
         unrec = set(req.keys()) - KEYS
@@ -48,6 +52,8 @@ def run(script_str):
             auth = defreq['auth']
         except KeyError:
             auth = None
+
+        verify = defreq['verify']
 
         try:
             method = req['method']
@@ -96,7 +102,7 @@ def run(script_str):
                 yield "Request: " + url + "\n"
                 r = requests.request(
                     method, url, files=files, data=data, allow_redirects=False,
-                    auth=auth)
+                    auth=auth, verify=verify)
             except requests.exceptions.InvalidURL as e:
                 yield "Invalid URL: " + str(e) + '\n'
                 break
