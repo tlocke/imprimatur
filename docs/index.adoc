@@ -175,6 +175,11 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.14, 2015-02-19
+
+- Make sure `templates` directory is included in the distribution.
+
+
 === Version 0.23.13, 2015-02-15
 
 - Added the `verify` flag for controlling whether to verify SSL certificates or
