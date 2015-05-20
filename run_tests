@@ -119,4 +119,27 @@ if imprimatur tests/4/test.py > /dev/null
 fi
 echo "Passed Test 4"
 
+TEST_5="$(imprimatur tests/5/test.py)"
+
+TEST_5_DES="Name: Response has no body, and status_code doesn't match.
+Request: http://localhost:5000/blank
+The desired status code 303 doesn't match the actual status code 200.
+('content-length', '0')
+('content-type', 'text; charset=utf-8')
+('date', 'Sat, 17 Jan 2015 13:30:54 GMT')
+('server', 'Werkzeug/0.9.6 Python/3.4.0')"
+
+if [[ "$TEST_5" != "$TEST_5_DES" ]]
+  then
+    echo -e "Test 5 failed.\n$TEST_5" 
+    exit 1
+fi
+
+if imprimatur tests/5/test.py > /dev/null
+  then
+    echo "Test 5 should fail, but it returned success."
+    exit 1
+fi
+echo "Passed Test 5"
+
 echo "Passed All!!"

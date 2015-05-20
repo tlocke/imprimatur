@@ -78,6 +78,14 @@ def test_1():
 def test_2():
     return 'I warn you Mr Bond, my patience is not inexhaustible.'
 
+@app.route('/blank')
+def blank():
+    response = make_response('')
+    response.headers['content-length'] = '0'
+    response.headers['content-type'] = 'text; charset=utf-8'
+    response.headers['date'] = 'Sat, 17 Jan 2015 13:30:54 GMT'
+    response.headers['server'] = 'Werkzeug/0.9.6 Python/3.4.0'
+    return response
 
 @app.route('/echo', methods=['POST'])
 def echo():
