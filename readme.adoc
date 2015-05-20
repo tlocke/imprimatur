@@ -7,7 +7,7 @@ The tests are described in a simple test script. Along with the standard HTTP
 methods, Imprimatur handles authentication, file uploads and HTTPS. The
 responses are validated using regular expressions. 
 
-Imprimatur runs on Python 2.6, 2.7, 3.3 and 3.4 on both CPython and PyPy.
+Imprimatur runs on Python 2.7 and 3.4 on both CPython and PyPy.
 
 Links:
 
