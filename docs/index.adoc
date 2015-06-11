@@ -160,6 +160,8 @@ property name means that it is carried over to subsequent requests.
   check for, eg. `200`
 |===
 
+Cookies are always retained between requests.
+
 
 == Web Interface
 

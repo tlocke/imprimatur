@@ -36,6 +36,8 @@ def run(script_str):
         yield "Problem with script: " + traceback.format_exc()
         return
 
+    s = requests.Session()
+
     defreq = {
         'host': 'localhost', 'port': 80, 'scheme': 'http', 'verify': False}
     failed = False
@@ -104,7 +106,7 @@ def run(script_str):
             j += 1
             try:
                 yield "Request: " + url + "\n"
-                r = requests.request(
+                r = s.request(
                     method, url, files=files, data=data, allow_redirects=False,
                     auth=auth, verify=verify)
             except requests.exceptions.InvalidURL as e:
