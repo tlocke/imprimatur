@@ -177,6 +177,12 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.17, 2016-05-09
+
+- Fixed a bug where if a URL is malformed the test is skipped whereas it should
+  fail.
+
+
 === Version 0.23.16, 2015-06-11
 
 - Now holds a session across requests.
