@@ -110,7 +110,7 @@ def run(script_str):
                     method, url, files=files, data=data, allow_redirects=False,
                     auth=auth, verify=verify)
             except requests.exceptions.InvalidURL as e:
-                yield "Invalid URL: " + str(e) + '\n'
+                msg = "Invalid URL: " + str(e) + '\n'
                 break
 
             if 'status_code' in req:

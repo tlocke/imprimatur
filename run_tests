@@ -142,4 +142,11 @@ if imprimatur tests/5/test.py > /dev/null
 fi
 echo "Passed Test 5"
 
+if imprimatur tests/6/test.py > /dev/null
+  then
+    echo "Test 6 should fail, but it returned success."
+    exit 1
+fi
+echo "Passed Test 6"
+
 echo "Passed All!!"
