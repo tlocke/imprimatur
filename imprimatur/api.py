@@ -54,17 +54,10 @@ def run(script_str):
         url = defreq['scheme'] + '://' + defreq['host'] + ':' + \
             str(defreq['port']) + req['path']
 
-        try:
-            auth = defreq['auth']
-        except KeyError:
-            auth = None
-
+        auth = defreq.get('auth')
         verify = defreq['verify']
 
-        try:
-            method = req['method']
-        except KeyError:
-            method = 'get'
+        method = req.get('method', 'get')
 
         try:
             yield "Name: " + req['name'] + '\n'
@@ -77,25 +70,11 @@ def run(script_str):
         except KeyError:
             files = None
 
-        try:
-            data = req['data']
-        except KeyError:
-            data = None
-
-        try:
-            tries = req['tries']
-        except KeyError:
-            tries = {'max': 1, 'period': 1}
-
-        try:
-            max_tries = tries['max']
-        except KeyError:
-            max_tries = 10
-
-        try:
-            period = tries['period']
-        except KeyError:
-            period = 1
+        data = req.get('data')
+        tries = req.get('tries', {'max': 1, 'period': 1})
+        max_tries = tries.get('max', 10)
+        period = tries.get('period', 1)
+        headers = req.get('headers')
 
         j = 0
         failed = True
@@ -108,7 +87,7 @@ def run(script_str):
                 yield "Request: " + url + "\n"
                 r = s.request(
                     method, url, files=files, data=data, allow_redirects=False,
-                    auth=auth, verify=verify)
+                    auth=auth, verify=verify, headers=headers)
             except requests.exceptions.InvalidURL as e:
                 msg = "Invalid URL: " + str(e) + '\n'
                 break

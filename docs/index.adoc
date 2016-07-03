@@ -158,6 +158,10 @@ property name means that it is carried over to subsequent requests.
 | status_code
 | https://tools.ietf.org/html/rfc7231#section-6[HTTP status code] to
   check for, eg. `200`
+
+| headers
+| Dictionary of HTTP headers eg. `{'Accept-Charset': 'utf-8'}`
+
 |===
 
 Cookies are always retained between requests.
