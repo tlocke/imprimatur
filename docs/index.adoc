@@ -180,6 +180,11 @@ unsecure.
 
 == Release Notes
 
+=== Version 0.23.19, 2016-07-07
+
+- Fixed bug with custom HTTP headers.
+
+
 === Version 0.23.18, 2016-07-03
 
 - Added support for specifying HTTP headers.
