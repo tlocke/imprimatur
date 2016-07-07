@@ -24,7 +24,7 @@ CARRIED = frozenset(('host', 'port', 'scheme', 'auth', 'verify'))
 NOT_CARRIED = frozenset(
     [
         'name', 'regexes', 'status_code', 'path', 'files', 'method', 'data',
-        'tries'])
+        'tries', 'headers'])
 
 KEYS = frozenset(CARRIED | NOT_CARRIED)
 

@@ -54,6 +54,8 @@ Name: HTTP HEAD request. Success
 Request: http://localhost:5000/text_1
 Name: Upload script with syntax errors
 Request: http://localhost:5000/
+Name: Custom HTTP headers
+Request: http://localhost:5000/text_1
 Passed all tests!"
 
 if [[ "$TEST_2" != "$TEST_2_DES" ]]
