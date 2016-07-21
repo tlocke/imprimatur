@@ -180,6 +180,12 @@ unsecure.
 
 == Release Notes
 
+=== Version 0.23.20, 2016-07-21
+
+- In the absence of a character encoding in the response, rather than guess
+  assume utf-8 and ignore any errors.
+
+
 === Version 0.23.19, 2016-07-07
 
 - Fixed bug with custom HTTP headers.
