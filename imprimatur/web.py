@@ -66,8 +66,8 @@ def runs(run_id):
 
 @app.route('/text_1')
 def test_1():
-    response = make_response('The best of all possible worlds.')
-    response.headers['content-length'] = '32'
+    response = make_response(b'\xfeThe best of all possible worlds.')
+    response.headers['content-length'] = '33'
     response.headers['content-type'] = 'text; charset=utf-8'
     response.headers['date'] = 'Sat, 17 Jan 2015 13:30:54 GMT'
     response.headers['server'] = 'Werkzeug/0.9.6 Python/3.4.0'

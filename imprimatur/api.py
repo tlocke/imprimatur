@@ -11,11 +11,8 @@ def response_str(response):
     for k in sorted(headers.keys()):
         res.append(str((k, headers[k])) + '\n')
     res.append('\n')
-    if response.apparent_encoding is None:
-        enc = 'utf8'
-    else:
-        enc = response.apparent_encoding
-    res.append(text_type(response.content, enc))
+    enc = 'utf8' if response.encoding is None else response.encoding
+    res.append(text_type(response.content, enc, 'ignore'))
     return ''.join(res)
 
 
