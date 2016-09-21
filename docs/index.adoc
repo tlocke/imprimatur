@@ -180,6 +180,12 @@ unsecure.
 
 == Release Notes
 
+=== Version 0.23.21, 2016-09-21
+
+- Fixed bug where one couldn't send a binary file as part of an Imprimatur
+  request.
+
+
 === Version 0.23.20, 2016-07-21
 
 - In the absence of a character encoding in the response, rather than guess
