@@ -63,7 +63,7 @@ def run(script_str):
 
         try:
             files = dict(
-                (k, open(v, 'r')) for k, v in req['files'].items())
+                (k, open(v, 'rb')) for k, v in req['files'].items())
         except KeyError:
             files = None
 

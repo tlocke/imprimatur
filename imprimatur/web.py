@@ -100,6 +100,11 @@ def echo():
     return ''.join(ret)
 
 
+@app.route('/echo_bin', methods=['POST'])
+def echo_bin():
+    return "okay"
+
+
 @app.route('/redirect')
 def redir():
     location = request.args['location']

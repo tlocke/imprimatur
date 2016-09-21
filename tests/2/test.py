@@ -66,4 +66,10 @@
         'name': "Custom HTTP headers",
         'path': '/text_1',
         'headers': {'qubit': "deutsch"},
+        'status_code': 200},
+    {
+        'name': "Binary file upload success",
+        'path': "/echo_bin",
+        'method': "post",
+        'files': {"yellow": "tests/2/binary.bin"},
         'status_code': 200}]
