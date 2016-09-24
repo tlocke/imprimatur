@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import versioneer
+from setuptools import setup
 versioneer.VCS = 'git'
 versioneer.versionfile_source = 'imprimatur/_version.py'
 versioneer.versionfile_build = 'imprimatur/_version.py'
 versioneer.tag_prefix = ''
 versioneer.parentdir_prefix = 'imprimatur-'
-from setuptools import setup
 
 long_description = """\
 
@@ -40,7 +40,7 @@ setup(
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: Implementation",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
