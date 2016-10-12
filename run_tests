@@ -153,4 +153,27 @@ if imprimatur tests/6/test.py > /dev/null
 fi
 echo "Passed Test 6"
 
+TEST_7="$(imprimatur tests/7/test.py)"
+
+TEST_7_DES_1="Name: Invalid regex
+Request: http://localhost:5000/text_2
+Problem with regex: unexpected end of regular expression"
+
+TEST_7_DES_2="Name: Invalid regex
+Request: http://localhost:5000/text_2
+Problem with regex: unterminated character set at position 0"
+
+if [[ "$TEST_7" != "$TEST_7_DES_1" && "$TEST_7" != "$TEST_7_DES_2" ]]
+  then
+    echo -e "Test 7 failed.\n$TEST_7" 
+    exit 1
+fi
+
+if imprimatur tests/7/test.py > /dev/null
+  then
+    echo "Test 7 should fail, but it returned success."
+    exit 1
+fi
+echo "Passed Test 7"
+
 echo "Passed All!!"

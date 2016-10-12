@@ -3,6 +3,7 @@ import re
 import time
 from six import text_type
 import traceback
+import sre_constants
 
 
 def response_str(response):
@@ -103,10 +104,14 @@ def run(script_str):
                 while not regex_failed and k < len(req['regexes']):
                     pattern = req['regexes'][k]
                     k += 1
-                    if re.search(
-                            pattern, response_str(r),
-                            flags=re.MULTILINE | re.DOTALL) is None:
-                        regex_failed = True
+                    try:
+                        if re.search(
+                                pattern, response_str(r),
+                                flags=re.MULTILINE | re.DOTALL) is None:
+                            regex_failed = True
+                    except sre_constants.error as e:
+                        yield "Problem with regex: " + str(e) + '\n'
+                        return
                 if regex_failed:
                     msg = "The regular expression '" + pattern + \
                         "' fails.\n" + response_str(r)
