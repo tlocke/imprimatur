@@ -168,6 +168,11 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.23, 2016-10-12
+
+- Give a better error message if a regular expression is invalid.
+
+
 === Version 0.23.22, 2016-09-24
 
 - Have all the docs in the readme.adoc file. This means that the Python Hosted
