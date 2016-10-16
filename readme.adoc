@@ -149,6 +149,9 @@ property name means that it is carried over to subsequent requests.
 | headers
 | Dictionary of HTTP headers eg. `{'Accept-Charset': 'utf-8'}`
 
+| unzip
+| If `True` then unzip the body of the response.
+
 |===
 
 Cookies are always retained between requests.

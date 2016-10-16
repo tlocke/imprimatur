@@ -1,9 +1,13 @@
-from flask import Flask, request, redirect, make_response, render_template
+from flask import (
+    Flask, request, redirect, make_response, render_template, send_file)
 import sys
 from six import text_type
 import threading
 import imprimatur
 import traceback
+from io import BytesIO
+from zipfile import ZIP_DEFLATED, ZipFile
+
 
 app = Flask(__name__)
 
@@ -77,6 +81,17 @@ def test_1():
 @app.route('/text_2')
 def test_2():
     return 'I warn you Mr Bond, my patience is not inexhaustible.'
+
+
+@app.route('/text_2_zip')
+def test_2_zip():
+    zfile = BytesIO()
+    with ZipFile(zfile, mode='w', compression=ZIP_DEFLATED) as zf:
+        zf.writestr(
+            'bond.zip',
+            'I warn you Mr Bond, my patience is not inexhaustible.')
+    zfile.seek(0)
+    return send_file(zfile, attachment_filename='bond.zip', as_attachment=True)
 
 
 @app.route('/blank')

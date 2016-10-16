@@ -58,6 +58,8 @@ Name: Custom HTTP headers
 Request: http://localhost:5000/text_1
 Name: Binary file upload success
 Request: http://localhost:5000/echo_bin
+Name: Unzip
+Request: http://localhost:5000/text_2_zip
 Passed all tests!"
 
 if [[ "$TEST_2" != "$TEST_2_DES" ]]

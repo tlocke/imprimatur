@@ -4,16 +4,24 @@ import time
 from six import text_type
 import traceback
 import sre_constants
+import zipfile
+from io import BytesIO
 
 
-def response_str(response):
+def response_str(response, unzip):
     headers = response.headers
     res = []
     for k in sorted(headers.keys()):
         res.append(str((k, headers[k])) + '\n')
     res.append('\n')
     enc = 'utf8' if response.encoding is None else response.encoding
-    res.append(text_type(response.content, enc, 'ignore'))
+    if unzip:
+        with zipfile.ZipFile(BytesIO(response.content)) as zfile:
+            response_content = zfile.read(zfile.infolist()[0])
+    else:
+        response_content = response.content
+
+    res.append(text_type(response_content, enc, 'ignore'))
     return ''.join(res)
 
 
@@ -22,7 +30,7 @@ CARRIED = frozenset(('host', 'port', 'scheme', 'auth', 'verify'))
 NOT_CARRIED = frozenset(
     [
         'name', 'regexes', 'status_code', 'path', 'files', 'method', 'data',
-        'tries', 'headers'])
+        'tries', 'headers', 'unzip'])
 
 KEYS = frozenset(CARRIED | NOT_CARRIED)
 
@@ -73,6 +81,7 @@ def run(script_str):
         max_tries = tries.get('max', 10)
         period = tries.get('period', 1)
         headers = req.get('headers')
+        unzip = req.get('unzip', False)
 
         j = 0
         failed = True
@@ -95,7 +104,7 @@ def run(script_str):
                 if r.status_code != req_status_code:
                     msg = "The desired status code " + str(req_status_code) + \
                         " doesn't match the actual status code " + \
-                        str(r.status_code) + ".\n" + response_str(r)
+                        str(r.status_code) + ".\n" + response_str(r, unzip)
                     continue
 
             if 'regexes' in req:
@@ -106,7 +115,7 @@ def run(script_str):
                     k += 1
                     try:
                         if re.search(
-                                pattern, response_str(r),
+                                pattern, response_str(r, unzip),
                                 flags=re.MULTILINE | re.DOTALL) is None:
                             regex_failed = True
                     except sre_constants.error as e:
@@ -114,7 +123,7 @@ def run(script_str):
                         return
                 if regex_failed:
                     msg = "The regular expression '" + pattern + \
-                        "' fails.\n" + response_str(r)
+                        "' fails.\n" + response_str(r, unzip)
                     continue
 
             failed = False

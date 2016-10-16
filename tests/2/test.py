@@ -72,4 +72,10 @@
         'path': "/echo_bin",
         'method': "post",
         'files': {"yellow": "tests/2/binary.bin"},
-        'status_code': 200}]
+        'status_code': 200},
+    {
+        'name': "Unzip",
+        'path': "/text_2_zip",
+        'unzip': True,
+        'status_code': 200,
+        'regexes': ['inexhaustible']}]
