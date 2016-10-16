@@ -171,6 +171,11 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.24, 2016-10-16
+
+- The new `unzip: True` option will decompress the response.
+
+
 === Version 0.23.23, 2016-10-12
 
 - Give a better error message if a regular expression is invalid.
