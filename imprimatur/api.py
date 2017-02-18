@@ -82,6 +82,7 @@ def run(script_str):
         period = tries.get('period', 1)
         headers = req.get('headers')
         unzip = req.get('unzip', False)
+        allow_redirects = req.get('allow_redirects', False)
 
         j = 0
         failed = True
@@ -93,8 +94,9 @@ def run(script_str):
             try:
                 yield "Request: " + url + "\n"
                 r = s.request(
-                    method, url, files=files, data=data, allow_redirects=False,
-                    auth=auth, verify=verify, headers=headers)
+                    method, url, files=files, data=data,
+                    allow_redirects=allow_redirects, auth=auth, verify=verify,
+                    headers=headers)
             except requests.exceptions.InvalidURL as e:
                 msg = "Invalid URL: " + str(e) + '\n'
                 break

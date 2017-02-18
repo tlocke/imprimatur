@@ -140,6 +140,7 @@ def auth():
     response.headers['server'] = 'Werkzeug/0.9.6 Python/3.4.0'
     return response
 
+
 count = 0
 
 
@@ -165,6 +166,7 @@ def page_not_found(e):
     error = traceback.format_exc()
     sys.stderr.write(error)
     return error, 500
+
 
 if __name__ == '__main__':
         app.run(debug=True)
