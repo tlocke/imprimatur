@@ -57,8 +57,9 @@ def run(script_str):
         for k in CARRIED & set(req.keys()):
             defreq[k] = req[k]
 
+        path = req.get('path', '/')
         url = defreq['scheme'] + '://' + defreq['host'] + ':' + \
-            str(defreq['port']) + req['path']
+            str(defreq['port']) + path
 
         auth = defreq.get('auth')
         verify = defreq['verify']

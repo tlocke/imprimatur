@@ -178,6 +178,11 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.25, 2018-04-10
+
+- The `path` doesn't default to `/`.
+
+
 === Version 0.23.24, 2016-10-16
 
 - The new `unzip: True` option will decompress the response.

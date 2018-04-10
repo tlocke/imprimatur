@@ -78,4 +78,7 @@
         'path': "/text_2_zip",
         'unzip': True,
         'status_code': 200,
-        'regexes': ['inexhaustible']}]
+        'regexes': ['inexhaustible']},
+    {
+        'name': "Default path",
+        'status_code': 200}]
