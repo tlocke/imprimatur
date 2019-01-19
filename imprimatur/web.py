@@ -29,7 +29,7 @@ class RunThread(threading.Thread):
                 with self.results_lock:
                     self.results.append(txt)
 
-        except:
+        except BaseException:
             sys.stderr.write("An error:\n")
             sys.stderr.write(traceback.format_exc())
 

@@ -178,6 +178,11 @@ unsecure.
 == Release Notes
 
 
+=== Version 0.23.26, 2019-01-19
+
+- Upgrade dependecies `requests` and `flask`.
+
+
 === Version 0.23.25, 2018-04-10
 
 - The `path` doesn't default to `/`.
