@@ -188,6 +188,13 @@ unsecure.
 
 == Release Notes
 
+=== Version 0.24.0, 2020-04-09
+
+- Drop support for Python 2.
+- The webserver now listens for external connections.
+- Upgrade dependent libraries.
+- Use TravisCI for testing.
+
 
 === Version 0.23.26, 2019-01-19
 
@@ -420,5 +427,11 @@ and the doc will appear at `docs/index.html`.
 Run `tox` make sure all tests pass, then update the release notes in
 `readme.adoc` then do:
 
- git tag -a x.y.z -m "Version x.y.z"
- python setup.py register sdist bdist_wheel upload
+....
+git tag -a x.y.z -m "version x.y.z"
+rm -r build
+rm -r dist
+python setup.py sdist bdist_wheel
+for f in dist/*; do gpg --detach-sign -a $f; done
+twine upload dist/*
+....
