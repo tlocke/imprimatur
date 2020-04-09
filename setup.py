@@ -37,8 +37,6 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: Implementation",
@@ -49,6 +47,6 @@ setup(
     keywords="functional testing web",
     packages=("imprimatur",),
     package_data={'imprimatur': ['templates/*.html']},
-    install_requires=['requests==2.21.0', 'flask==1.0.2', 'six==1.10.0'],
+    install_requires=['requests==2.23.0', 'flask==1.1.2'],
     entry_points={'console_scripts': ['imprimatur = imprimatur.console:main']}
 )

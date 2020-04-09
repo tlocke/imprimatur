@@ -1,7 +1,6 @@
 from flask import (
     Flask, request, redirect, make_response, render_template, send_file)
 import sys
-from six import text_type
 import threading
 import imprimatur
 import traceback
@@ -52,7 +51,7 @@ def home():
         return render_template('home.html', runs=runs)
     else:
         fl = request.files['file']
-        script = text_type(fl.stream.read(), 'utf8')
+        script = str(fl.stream.read(), 'utf8')
         proc = RunThread(script)
         with proc_lock:
             proc_id = len(procs)
@@ -110,7 +109,7 @@ def echo():
     fls = list(request.files.items())
     if len(fls) > 0:
         fname, fval = fls[0]
-        ret.append(fname + ": " + text_type(fval.stream.read(), 'utf8') + '\n')
+        ret.append(fname + ": " + str(fval.stream.read(), 'utf8') + '\n')
     ret.append(str(request.form) + '\n')
     return ''.join(ret)
 
@@ -169,4 +168,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-        app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
