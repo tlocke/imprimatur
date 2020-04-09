@@ -8,7 +8,7 @@ applications. The tests are described in a simple test script. Along with the
 standard HTTP methods, Imprimatur handles authentication, file uploads and
 HTTPS. The responses are validated using regular expressions.
  
-Imprimatur runs on Python 2.7 and 3.5 on both CPython and PyPy.
+Imprimatur runs on Python 3.5+ on both CPython and PyPy.
 
 
 == Licence
@@ -36,7 +36,9 @@ To run an example test script save the following as a file called `test.py`:
  [
    {
      'host': 'www.google.com',
-     'status_code': 200}] 
+     'status_code': 200
+   }
+ ] 
 
 then run it with:
 
@@ -52,26 +54,30 @@ some more examples:
          'host': "localhost",
          'path': "/text_2",
          'status_code': 200,
-         'regexes': ['inexhaustible']},
+         'regexes': ['inexhaustible']
+     },
      {
          'name': "Basic auth",
          'path': "/auth",
          'auth': ("conrad", "kurtz"),
-         'status_code': 200},
+         'status_code': 200
+     },
      {
          'name': "File upload",
          'path': "/echo",
          'method': "post",
          'files': {"yellow": "tests/2/crome-file.txt"},
          'regexes': ["yellow", "on the leads"],
-         'status_code': 200},
+         'status_code': 200
+     },
      {
          'name': "Post name and value with regex.",
          'path': "/echo",
          'method': "post",
          'data': {"quote": "Leisure is the mother of philosophy."},
          'status_code': 200,
-         'regexes': ["Leisure"]},
+         'regexes': ["Leisure"]
+     },
      {
          'name': "Repeat until successful.",
          'path': "/counter",
@@ -79,22 +85,27 @@ some more examples:
          # 'period' is the number of seconds to wait between tries
          'tries': {'max': 3, 'period': 1},
          'status_code': 200,
-         'regexes': ["The Decline And Fall Of The Roman Empire"]},
+         'regexes': ["The Decline And Fall Of The Roman Empire"]
+     },
      {
          'name': "Regex on header.",
          'path': "/redirect?location=http://localhost:5000/here.html",
          'status_code': 302,
-         'regexes': ["here.html"]},
+         'regexes': ["here.html"]
+     },
      {
          'name': "HTTP HEAD request.",
          'path': "/text_1",
          'method': "head",
-         'status_code': 200},
+         'status_code': 200
+     },
      {
          'name': "Allow redirects",
          'path': "/text_1",
          'allow_redirects': 'True',
-         'status_code': 200}]
+         'status_code': 200
+     }
+ ]
 
 
 == Reference

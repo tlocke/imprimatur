@@ -1,7 +1,6 @@
 import requests
 import re
 import time
-from six import text_type
 import traceback
 import sre_constants
 import zipfile
@@ -21,7 +20,7 @@ def response_str(response, unzip):
     else:
         response_content = response.content
 
-    res.append(text_type(response_content, enc, 'ignore'))
+    res.append(str(response_content, enc, 'ignore'))
     return ''.join(res)
 
 
