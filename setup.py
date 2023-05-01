@@ -47,6 +47,6 @@ setup(
     keywords="functional testing web",
     packages=("imprimatur",),
     package_data={'imprimatur': ['templates/*.html']},
-    install_requires=['requests==2.23.0', 'flask==1.1.2'],
+    install_requires=['requests==2.23.0', 'flask==2.3.2'],
     entry_points={'console_scripts': ['imprimatur = imprimatur.console:main']}
 )
